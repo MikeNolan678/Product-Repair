@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
+using ProductRepairDataAccess.Models;
 using ProductRepairDataAccess.Models.Enums;
 using ProductRepairDataAccess.SQL;
 using System;
@@ -34,6 +35,11 @@ namespace ProductRepairDataAccess.Helpers
 
                 return generatedCaseId; // Return the generated CaseId
             }
+        }
+
+        public static void SubmitCase(CaseModel caseModel, string dbConnection)
+        {
+
         }
     }
 }
