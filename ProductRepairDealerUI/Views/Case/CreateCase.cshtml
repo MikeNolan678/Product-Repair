@@ -6,33 +6,26 @@
 
 <div class="container mt-5"
 
-    <form method="post" asp-controller="CaseController" asp-action="NewCase" id="case-form">
-        <div class="row">
-            <div class="col">
-                <div class="form-group">
-                    <label for="caseId">Case ID:</label>
-                    <input type="text" id="caseId" class="form-control" value="1234" disabled />
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-group">
-                    <label>Account:</label>
-                    <input type="text" class="form-control" value="1234" disabled />
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-group">
-                    <label>Incident Type:</label>
-                    <input type="text" class="form-control" value="1234" disabled />
-                </div>
-            </div>
+<form method="post" asp-controller="CaseController" asp-action="NewCase" id="case-form">
+        <div class="col-md-4 mt-2">
+            <label for="caseId">Case ID:</label>
+            <input type="text" id="caseId" class="form-control" value="@ViewData["CaseId"]" disabled />
         </div>
-        <!-- Repeat similar structure for other properties -->
-        <!-- Add Item Button -->
-        <div class="form-group">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addItemModal">Add Item</button>
+        <div class="col-md-4 mt-2">
+            <label>Account:</label>
+            <input type="text" class="form-control" value="@ViewData["AccountId"]" disabled />
         </div>
-    </form>
+        <div class="col-md-4 mt-2">
+            <label>Incident Type:</label>
+            <input type="text" class="form-control" value="Repair Request" disabled />
+        </div>
+    <!-- Repeat similar structure for other properties -->
+
+    <!-- Add Item Button -->
+    <div class="form-group">
+        <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#addItemModal">Add Item</button>
+    </div>
+</form>
 
     <!-- Display added items -->
     <div id="addedItemsContainer"></div>
@@ -61,6 +54,8 @@
         <span class="visually-hidden">Loading...</span>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     $(document).ready(function () {

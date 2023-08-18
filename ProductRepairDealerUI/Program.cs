@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProductRepairDealerUI.Data;
+using Microsoft.AspNetCore.Authentication.Cookies; // Add this namespace for cookie authentication
+using Microsoft.AspNetCore.Authentication; // Add this namespace for authentication related types
+using ProductRepairDataAccess.Interfaces;
+using ProductRepairDataAccess.Services;
 
 namespace ProductRepairDealerUI
 {
@@ -11,13 +15,17 @@ namespace ProductRepairDealerUI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            var connectionString = builder.Configuration.GetConnectionString("DbConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.AddHttpContextAccessor(); // Add IHttpContextAccessor for accessing HttpContext
+            builder.Services.AddScoped<IAccountService, AccountService>(); // Register the service
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
