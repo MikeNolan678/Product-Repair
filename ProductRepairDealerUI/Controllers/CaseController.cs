@@ -35,30 +35,42 @@ namespace ProductRepairDealerUI.Controllers
                         CaseStatus.Draft,
                         _dbConnection);
 
-            ViewData["CaseId"] = caseId;
-            ViewData["AccountId"] = accountId;
+            CaseModel caseModel = new CaseModel
+            {
+                CaseId = caseId,
+                AccountId = accountId
+            };
 
-            return View();
+            return View("ViewCase", caseModel);
         }
 
         // GET: CaseController
-        public ActionResult ViewAllCases()
+        public ActionResult ViewCase(int caseId)
         {
-            return View();
+            CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, _dbConnection);
+
+            return View(caseModel);
         }
 
-        // GET: CaseController
-        public ActionResult ViewCase()
+        public ActionResult NewItem(int caseId)
         {
-            return View();
+            CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, _dbConnection);
+
+            return View(caseModel);
         }
 
-        public ActionResult AddItem(ItemModel item)
+        [HttpPost]
+        public ActionResult AddItem(NewCaseModel newItem)
         {
-            // Process the item data and add it to your data source
+            // Process the other fields submitted in the form and update the datasources
+            ItemHelpers.AddItemToCase(newItem, _dbConnection);
 
-            // Return the rendered item HTML as a partial view
-            return PartialView("_AddedItemPartial", item);
+            CaseModel caseModel = CaseHelpers.GetCaseModel(newItem.CaseId, _dbConnection);
+
+            return View("ViewCase", caseModel);
         }
+        
+
+        
     }
 }

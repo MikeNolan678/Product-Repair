@@ -1,0 +1,59 @@
+﻿@model ProductRepairDataAccess.Models.CaseModel
+
+@{
+    ViewBag.Title = "View Case";
+}
+
+<div class="container mt-5">
+
+    <form method="post" asp-controller="Case" asp-action="NewItem" id="case-form">
+        <div class="col-md-4 mt-2">
+            <label for="caseId">Case ID:</label>
+            <input type="text" name="CaseId" class="form-control" value="@Model.CaseId" disabled />
+        </div>
+        <div class="col-md-4 mt-2">
+            <label>Account:</label>
+            <input type="text" class="form-control" value="@Model.AccountId" disabled />
+        </div>
+        <div class="col-md-4 mt-2">
+            <label>Incident Type:</label>
+            <input type="text" class="form-control" value="Repair Request" disabled />
+        </div>
+        <!-- Repeat similar structure for other properties -->
+        <!-- Remove the submit button -->
+    </form>
+
+    <div class="container">
+        <h1>Items and Issues</h1>
+        @if (Model.Items != null)
+        {
+            foreach (var item in Model.Items)
+            {
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Item Information
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Item Number: @item.ItemNumber</h5>
+                        <p class="card-text">Color Code: @item.ColorCode</p>
+                        <p class="card-text">Size: @item.Size</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var issue in item.ItemIssues)
+                        {
+                            <li class="list-group-item">
+                                <h6 class="mb-0">Issue Category: @issue.IssueCategory</h6>
+                                <p class="mb-1">Issue Area: @issue.IssueArea</p>
+                                <p class="mb-1">Issue Details: @issue.IssueDetails</p>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Use a link to navigate to the NewItem action -->
+    <a href="@Url.Action("NewItem", "Case", new {Model.CaseId})" class="btn btn-primary mt-3">Add Item</a>
+
+</div>

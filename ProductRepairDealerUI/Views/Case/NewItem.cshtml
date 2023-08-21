@@ -1,0 +1,18 @@
+﻿@model ProductRepairDataAccess.Models.CaseModel
+
+<form method="post" asp-controller="Case" asp-action="AddItem">
+    <div class="col-md-4 mt-2">
+        <input type="text" class="form-control" value="Style Number" name="ItemNumber"/>
+    </div>
+    <div class="col-md-4 mt-2">
+        <input type="text" class="form-control" value="Colour" name="ColorCode"/>
+    </div>
+    <div class="col-md-4 mt-2">
+        <input type="text" class="form-control" value="Size" name="Size" />
+    </div>
+
+    <input type="hidden" name="CaseId" value="@Model.CaseId" />
+
+    <button type="submit" class="btn btn-primary mt-4" id="submit-button">Submit</button>
+
+</form>

@@ -9,6 +9,7 @@ namespace ProductRepairDataAccess.Models.Enums
     public enum CaseStatus
     {
         Draft,
+        Open,
         New,
         InProgress,
         Closed
