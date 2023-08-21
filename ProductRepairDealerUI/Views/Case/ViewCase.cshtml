@@ -23,37 +23,66 @@
         <!-- Remove the submit button -->
     </form>
 
-    <div class="container">
-        <h1>Items and Issues</h1>
+    <div class="mt-4">
+        <h5>Items and Issues</h5>
         @if (Model.Items != null)
         {
-            foreach (var item in Model.Items)
+            @foreach (var item in Model.Items)
             {
-                <div class="card mb-3">
-                    <div class="card-header">
-                        Item Information
+                <div class="card mt-4">
+                    <div class="card-header bg-primary text-white">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h5 class="mb-0" style="font-size: 1rem;">Style: @item.ItemNumber</h5>
+                            </div>
+                            <div class="col">
+                                <h5 class="mb-0" style="font-size: 1rem;">Color: @item.ColorCode</h5>
+                            </div>
+                            <div class="col">
+                                <h5 class="mb-0" style="font-size: 1rem;">Size: @item.Size</h5>
+                            </div>
+                            
+                        </div>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Item Number: @item.ItemNumber</h5>
-                        <p class="card-text">Color Code: @item.ColorCode</p>
-                        <p class="card-text">Size: @item.Size</p>
+                        <ul class="list-group list-group-flush">
+
+                            @if(item.ItemIssues.Count < 1)
+                            {
+                                <li class="list-group-item">
+                                    <p class="mb-1 mt-1">Add item issues for repair</p>
+                                
+                                </li>
+                            }
+
+                            @foreach (var issue in item.ItemIssues)
+                            {
+                                <li class="list-group-item">
+                                    <p class="mb-1"><strong>Issue Category:</strong> @issue.IssueCategory </p>
+                                    <p class="mb-1"><strong>Issue Area:</strong> @issue.IssueArea </p>
+                                    <p class="mb-1"><strong>Issue Details:</strong> @issue.IssueDetails </p>
+                                </li>
+                            }
+
+                            <div class="mb-1 mt-1">
+                                <a href="@Url.Action("NewItemIssue", "Case", new { CaseId = Model.CaseId, ItemId = item.ItemId })" class="btn btn-primary btn-sm">Add Issue</a>
+                            </div>
+                        </ul>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        @foreach (var issue in item.ItemIssues)
-                        {
-                            <li class="list-group-item">
-                                <h6 class="mb-0">Issue Category: @issue.IssueCategory</h6>
-                                <p class="mb-1">Issue Area: @issue.IssueArea</p>
-                                <p class="mb-1">Issue Details: @issue.IssueDetails</p>
-                            </li>
-                        }
-                    </ul>
                 </div>
             }
+
+
         }
+        <div class="mt-3 mb-4">
+            <a href="@Url.Action("NewItem", "Case", new {Model.CaseId})" class="btn btn-primary btn-sm mt-1">Add Item</a>
+        </div>
+
+        @if (Model.Items.Count > 0)
+        {
+            <div class="mb-4"> 
+            <a href="@Url.Action("SubmitCase", "Case", new {Model.CaseId})" class="btn btn-primary mt-1">Submit Repair</a>
+            </div>
+        }   
     </div>
-
-    <!-- Use a link to navigate to the NewItem action -->
-    <a href="@Url.Action("NewItem", "Case", new {Model.CaseId})" class="btn btn-primary mt-3">Add Item</a>
-
 </div>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Operations;
 using ProductRepairDataAccess;
 using ProductRepairDataAccess.Helpers;
 using ProductRepairDataAccess.Interfaces;
@@ -69,8 +70,30 @@ namespace ProductRepairDealerUI.Controllers
 
             return View("ViewCase", caseModel);
         }
-        
 
-        
+        public ActionResult NewItemIssue(int caseId, Guid ItemId)
+        {
+            ItemModel itemModel = ItemHelpers.GetItemModel(ItemId, _dbConnection);
+
+            return View(itemModel);
+        }
+
+        [HttpPost]
+        public ActionResult AddItemIssue(NewItemIssueModel newItemIssue)
+        {
+            // Process the other fields submitted in the form and update the datasources
+            ItemHelpers.AddItemIssueToItem(newItemIssue, _dbConnection);
+
+            CaseModel caseModel = CaseHelpers.GetCaseModel(newItemIssue.CaseId, _dbConnection);
+
+            return View("ViewCase", caseModel);
+        }
+
+        public ActionResult SubmitCase(int caseId)
+        {
+            CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, _dbConnection);
+
+            return View(caseModel);
+        }
     }
 }

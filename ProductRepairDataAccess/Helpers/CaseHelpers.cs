@@ -62,6 +62,16 @@ namespace ProductRepairDataAccess.Helpers
             if (caseItems != null && caseItems.Count > 0)
             {
                 caseModel.Items.AddRange(caseItems);
+
+                foreach (var item in caseModel.Items)
+                {
+                    var itemIssues = ItemHelpers.GetItemIssueFromItem(item.ItemId, dbConnection);
+
+                    if(itemIssues != null && itemIssues.Count > 0)
+                    {
+                        item.ItemIssues.AddRange(itemIssues);
+                    }
+                }
             }
 
             return caseModel; // Return with the generated CaseId

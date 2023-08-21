@@ -15,5 +15,6 @@ namespace ProductRepairDataAccess.Models
         public List<ItemIssueModel>? ItemIssues { get; set; } = new List<ItemIssueModel>();
         public ItemStatus Status { get; set; }
         public Guid ItemId { get; set; }
+        public int CaseId { get; set; }
     }
 }

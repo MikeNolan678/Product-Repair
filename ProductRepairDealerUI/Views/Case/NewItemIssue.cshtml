@@ -1,0 +1,49 @@
+﻿@model ProductRepairDataAccess.Models.ItemModel
+<p>Item Issue Form</p>
+
+<form method="post" asp-controller="Case" asp-action="AddItemIssue">
+    <div class="form-group">
+        <label for="issueArea">Issue Area</label>
+        <select class="form-control" id="issueArea" name="IssueArea">
+            <option value="Chest">Chest</option>
+            <option value="Back">Back</option>
+            <option value="LeftArm">Left Arm</option>
+            <option value="RightArm">Right Arm</option>
+            <option value="LeftLeg">Left Leg</option>
+            <option value="RightLeg">Right Leg</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="issueCategory">Issue Category</label>
+        <select class="form-control" id="issueCategory" name="IssueCategory">
+            <option value="Hole">Hole</option>
+            <option value="Zip">Zip</option>
+            <option value="Seam">Seam</option>
+            <option value="Waterproofing">Waterproofing</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="itemOrientation">Item Orientation</label>
+        <select class="form-control" id="itemOrientation" name="ItemOrientation">
+            <option value="Front">Front</option>
+            <option value="Back">Back</option>
+            <option value="Top">Top</option>
+            <option value="Bottom">Bottom</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="issueDetails">Issue Details</label>
+        <input type="text" class="form-control" name="issueDetails" />
+    </div>
+
+    <input type="hidden" name="CaseId" value="@Model.CaseId" />
+    <input type="hidden" name="ItemId" value="@Model.ItemId" />
+
+    <button type="submit" class="btn btn-primary mt-4" id="submit-button">Add Issue</button>
+</form>
