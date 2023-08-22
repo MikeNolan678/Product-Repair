@@ -91,7 +91,7 @@ namespace ProductRepairDealerUI.Controllers
 
         public ActionResult SubmitCase(int caseId)
         {
-            CaseHelpers.SubmitCase(caseId, _dbConnection);
+            CaseHelpers.UpdateCaseStatus(caseId,"Open", _dbConnection);
 
             return View();
         }
@@ -119,6 +119,13 @@ namespace ProductRepairDealerUI.Controllers
             CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, _dbConnection);
 
             return View(caseModel);
+        }
+
+        public ActionResult CancelCase(int caseId)
+        {
+            CaseHelpers.UpdateCaseStatus(caseId, "Canceled", _dbConnection);
+
+            return View();
         }
     }
 }

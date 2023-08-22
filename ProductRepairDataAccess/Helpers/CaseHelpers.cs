@@ -39,17 +39,18 @@ namespace ProductRepairDataAccess.Helpers
             }
         }
 
-        public static void SubmitCase(int caseId, string dbConnection)
+        public static void UpdateCaseStatus(int caseId,string status, string dbConnection)
         {
             CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, dbConnection);
 
             string submitCaseSql = @"UPDATE [dbo].[Case]
-                                        SET Status = 'Open' 
+                                        SET Status = @Status 
                                         WHERE CaseId = @CaseId";
 
             var submitCaseParm = new 
             {
-                CaseId = caseId
+                CaseId = caseId,
+                Status = status
             };
 
             using (IDbConnection connection = new SqlConnection(dbConnection))

@@ -4,6 +4,13 @@
     <h5>Draft Cases</h5>
     @if (Model.Cases != null)
     {
+
+        if(Model.Cases.Count == 0)
+        {
+            <p>No draft cases</p>
+        }
+
+
         @foreach (var draftCase in Model.Cases)
         {
             <div class="card mt-4">
@@ -33,7 +40,7 @@
                         }
                     </ul>
                     <a href="@Url.Action("ViewCase", "Case", new {CaseId = draftCase.CaseId})" class="btn btn-primary btn-sm">View Case</a>
-                    <a href="@Url.Action("ViewCase", "Case", new {CaseId = draftCase.CaseId})" class="btn btn-primary btn-sm">Cancel Case</a>
+                    <a href="@Url.Action("CancelCase", "Case", new {CaseId = draftCase.CaseId})" class="btn btn-primary btn-sm">Cancel Case</a>
                 </div>
             </div>
         }
