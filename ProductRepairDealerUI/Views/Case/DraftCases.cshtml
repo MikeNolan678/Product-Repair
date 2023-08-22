@@ -1,0 +1,41 @@
+﻿@model ProductRepairDataAccess.Models.CasesModel
+
+<div class="mt-4">
+    <h5>Draft Cases</h5>
+    @if (Model.Cases != null)
+    {
+        @foreach (var draftCase in Model.Cases)
+        {
+            <div class="card mt-4">
+                <div class="card-header bg-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <p class="mb-0" style="font-size: 1rem;"><strong>Case Id:</strong> @draftCase.CaseId</p>
+                        </div>
+                        <div class="col">
+                            <p class="mb-0" style="font-size: 1rem;"><strong>Incident Type:</strong> @draftCase.IncidentType</p>
+                        </div>
+                        <div class="col">
+                            <p class="mb-0" style="font-size: 1rem;"><strong>Status:</strong> @draftCase.Status</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+
+                        @foreach (var item in draftCase.Items)
+                        {
+                            <li class="list-group-item">
+                                <p class="mb-1"><strong>Style:</strong> @item.ItemNumber</p>
+                                <p class="mb-1"><strong>Color:</strong> @item.ColorCode </p>
+                                <p class="mb-1"><strong>Size:</strong> @item.Size </p>
+                            </li>
+                        }
+                    </ul>
+                    <a href="@Url.Action("ViewCase", "Case", new {CaseId = draftCase.CaseId})" class="btn btn-primary btn-sm">View Case</a>
+                    <a href="@Url.Action("ViewCase", "Case", new {CaseId = draftCase.CaseId})" class="btn btn-primary btn-sm">Cancel Case</a>
+                </div>
+            </div>
+        }
+    }
+</div>

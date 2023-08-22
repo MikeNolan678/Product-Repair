@@ -96,13 +96,22 @@ namespace ProductRepairDealerUI.Controllers
             return View(caseModel);
         }
 
-        public ActionResult DraftCases(int caseId)
+        public ActionResult SaveDraft(int caseId)
+        {
+            CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, _dbConnection);
+
+            return View(caseModel);
+        }
+
+        public ActionResult DraftCases()
         {
             string accountId = _accountService.GetUserAccountId(_dbConnection);
 
-            List<CaseModel> caseModels = CaseHelpers.GetCases("draft", accountId, _dbConnection);
+            CasesModel casesModel = new CasesModel();
 
-            return View(caseModels);
+            casesModel.Cases.AddRange(CaseHelpers.GetCases("draft", accountId, _dbConnection));
+
+            return View(casesModel);
         }
 
         public ActionResult CreateShipment(int caseId)

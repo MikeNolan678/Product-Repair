@@ -48,6 +48,8 @@ namespace ProductRepairDataAccess.Helpers
         {
             CaseModel caseModel = new CaseModel();
 
+            caseModel.CaseId = caseId;
+
             string caseModelSql = @"SELECT * FROM [dbo].[Case]
                                        WHERE CaseId = @CaseId";
 
@@ -57,8 +59,12 @@ namespace ProductRepairDataAccess.Helpers
             {
                 caseModel = connection.QuerySingleOrDefault<CaseModel>(caseModelSql, caseModelParameters);
             }
+            return BuildCaseModel(dbConnection, caseModel);
+        }
 
-            var caseItems = ItemHelpers.GetItemsFromCase(caseId, dbConnection);
+        public static CaseModel BuildCaseModel (string dbConnection, CaseModel caseModel)
+        {
+            var caseItems = ItemHelpers.GetItemsFromCase(caseModel.CaseId, dbConnection);
 
             if (caseItems != null && caseItems.Count > 0)
             {
@@ -68,13 +74,13 @@ namespace ProductRepairDataAccess.Helpers
                 {
                     var itemIssues = ItemHelpers.GetItemIssueFromItem(item.ItemId, dbConnection);
 
-                    if(itemIssues != null && itemIssues.Count > 0)
+                    if (itemIssues != null && itemIssues.Count > 0)
                     {
                         item.ItemIssues.AddRange(itemIssues);
                     }
                 }
             }
-            return caseModel; // Return with the generated CaseId
+            return caseModel;
         }
 
         public static List<CaseModel> GetCases(string caseStatus, string accountId, string dbConnection)
@@ -96,8 +102,12 @@ namespace ProductRepairDataAccess.Helpers
                 caseModels = DataAccess.LoadRecord<CaseModel, dynamic>(getCasesSql, getCasesParm, dbConnection).ToList();
             }
 
+            foreach (var caseModel in caseModels) 
+            {
+                BuildCaseModel(dbConnection,caseModel);
+            }
+
             return caseModels;
         }
-
     }
 }
