@@ -91,9 +91,9 @@ namespace ProductRepairDealerUI.Controllers
 
         public ActionResult SubmitCase(int caseId)
         {
-            CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, _dbConnection);
+            CaseHelpers.SubmitCase(caseId, _dbConnection);
 
-            return View(caseModel);
+            return View();
         }
 
         public ActionResult SaveDraft(int caseId)

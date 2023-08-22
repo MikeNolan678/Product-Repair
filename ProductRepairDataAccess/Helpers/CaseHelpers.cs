@@ -39,9 +39,23 @@ namespace ProductRepairDataAccess.Helpers
             }
         }
 
-        public static void SubmitCase(CaseModel caseModel, string dbConnection)
+        public static void SubmitCase(int caseId, string dbConnection)
         {
+            CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, dbConnection);
 
+            string submitCaseSql = @"UPDATE [dbo].[Case]
+                                        SET Status = 'Open' 
+                                        WHERE CaseId = @CaseId";
+
+            var submitCaseParm = new 
+            {
+                CaseId = caseId
+            };
+
+            using (IDbConnection connection = new SqlConnection(dbConnection))
+            {
+                DataAccess.SaveData<dynamic>(submitCaseSql, submitCaseParm,dbConnection);
+            }
         }
 
         public static CaseModel GetCaseModel(int caseId, string dbConnection)
