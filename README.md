@@ -40,6 +40,8 @@ The solution is divided into three key parts:
     - Helper classes support the use of an MVC architecture.
       
 4. **Database:** This includes various normalised tables supporting the Case > Items > Issues struture.
+
+   - A script for creating the database can be found in the root folder of this repo (ProductRepairDatabase.sql) 
    
 
 ## Technology Stack
