@@ -20,7 +20,7 @@
             <input type="text" class="form-control" value="Repair Request" disabled />
         </div>
         <!-- Repeat similar structure for other properties -->
-        <!-- Remove the submit button -->
+        <!-- Removed the submit button -->
     </form>
 
     <div class="mt-4">
@@ -33,13 +33,13 @@
                     <div class="card-header bg-primary text-white">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h5 class="mb-0" style="font-size: 1rem;">Style: @item.ItemNumber</h5>
+                                <p class="mb-0" style="font-size: 1rem;"><strong>Style:</strong> @item.ItemNumber</p>
                             </div>
                             <div class="col">
-                                <h5 class="mb-0" style="font-size: 1rem;">Color: @item.ColorCode</h5>
+                                <p class="mb-0" style="font-size: 1rem;"><strong>Color:</strong> @item.ColorCode</p>
                             </div>
                             <div class="col">
-                                <h5 class="mb-0" style="font-size: 1rem;">Size: @item.Size</h5>
+                                <p class="mb-0" style="font-size: 1rem;"><strong>Size:</strong> @item.Size</p>
                             </div>
                             
                         </div>
@@ -50,8 +50,7 @@
                             @if(item.ItemIssues.Count < 1)
                             {
                                 <li class="list-group-item">
-                                    <p class="mb-1 mt-1">Add item issues for repair</p>
-                                
+                                    <p class="mb-1 mt-2">Add issue</p>
                                 </li>
                             }
 

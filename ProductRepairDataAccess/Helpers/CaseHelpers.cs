@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -73,8 +74,30 @@ namespace ProductRepairDataAccess.Helpers
                     }
                 }
             }
-
             return caseModel; // Return with the generated CaseId
         }
+
+        public static List<CaseModel> GetCases(string caseStatus, string accountId, string dbConnection)
+        {
+            List<CaseModel> caseModels = new List<CaseModel>();
+
+            string getCasesSql = @"SELECT * FROM [dbo].[Case]
+                                    WHERE AccountId = @AccountId
+                                    AND Status = @CaseStatus";
+
+            var getCasesParm = new
+            { 
+                AccountId = accountId, 
+                CaseStatus = caseStatus
+            };
+
+            using (IDbConnection connection = new SqlConnection(dbConnection))
+            {
+                caseModels = DataAccess.LoadRecord<CaseModel, dynamic>(getCasesSql, getCasesParm, dbConnection).ToList();
+            }
+
+            return caseModels;
+        }
+
     }
 }

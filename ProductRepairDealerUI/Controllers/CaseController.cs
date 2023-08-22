@@ -95,5 +95,21 @@ namespace ProductRepairDealerUI.Controllers
 
             return View(caseModel);
         }
+
+        public ActionResult DraftCases(int caseId)
+        {
+            string accountId = _accountService.GetUserAccountId(_dbConnection);
+
+            List<CaseModel> caseModels = CaseHelpers.GetCases("draft", accountId, _dbConnection);
+
+            return View(caseModels);
+        }
+
+        public ActionResult CreateShipment(int caseId)
+        {
+            CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, _dbConnection);
+
+            return View(caseModel);
+        }
     }
 }
