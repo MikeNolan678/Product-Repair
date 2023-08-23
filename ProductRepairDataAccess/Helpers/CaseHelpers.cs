@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -43,11 +44,11 @@ namespace ProductRepairDataAccess.Helpers
         {
             CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, dbConnection);
 
-            string submitCaseSql = @"UPDATE [dbo].[Case]
+            string updateCaseStatusSql = @"UPDATE [dbo].[Case]
                                         SET Status = @Status 
                                         WHERE CaseId = @CaseId";
 
-            var submitCaseParm = new 
+            var updateCaseStatusParm = new 
             {
                 CaseId = caseId,
                 Status = status
@@ -55,7 +56,7 @@ namespace ProductRepairDataAccess.Helpers
 
             using (IDbConnection connection = new SqlConnection(dbConnection))
             {
-                DataAccess.SaveData<dynamic>(submitCaseSql, submitCaseParm,dbConnection);
+                DataAccess.SaveData<dynamic>(updateCaseStatusSql, updateCaseStatusParm, dbConnection);
             }
         }
 
@@ -123,6 +124,54 @@ namespace ProductRepairDataAccess.Helpers
             }
 
             return caseModels;
+        }
+
+        public static void AddCustomerInformationToCase(CaseModel caseModel, string dbConnection)
+        {
+            string addCustomerInformationSql = @"UPDATE [dbo].[Case]
+                                        SET CustomerFirstName = @CustomerFirstName, 
+                                            CustomerLastName = @CustomerLastName, 
+                                            CustomerEmailAddress = @CustomerEmailAddress,
+                                            ReceiveNotification = @ReceiveNotification
+                                        WHERE CaseId = @CaseId";
+
+            var addCustomerInformationParm = new
+            {
+                CaseId = caseModel.CaseId,
+                CustomerFirstName = caseModel.CustomerFirstName,
+                CustomerLastName = caseModel.CustomerLastName,
+                CustomerEmailAddress = caseModel.CustomerEmailAddress,
+                ReceiveNotification = caseModel.ReceiveNotification
+            };
+
+            using (IDbConnection connection = new SqlConnection(dbConnection))
+            {
+                DataAccess.SaveData<dynamic>(addCustomerInformationSql, addCustomerInformationParm, dbConnection);
+            }
+        }
+
+        public static void RemoveCustomerInformationFromCase(int caseId, string dbConnection)
+        {
+            string removeCustomerInformationSql = @"UPDATE [dbo].[Case]
+                                        SET CustomerFirstName = @CustomerFirstName, 
+                                            CustomerLastName = @CustomerLastName, 
+                                            CustomerEmailAddress = @CustomerEmailAddress,
+                                            ReceiveNotification = @ReceiveNotification
+                                        WHERE CaseId = @CaseId";
+
+            var removeCustomerInformationParm = new
+            {
+                CaseId = caseId,
+                CustomerFirstName = (string?)null,
+                CustomerLastName = (string?)null,
+                CustomerEmailAddress = (string?)null,
+                ReceiveNotification = (bool?)null
+            };
+
+            using (IDbConnection connection = new SqlConnection(dbConnection))
+            {
+                DataAccess.SaveData<dynamic>(removeCustomerInformationSql, removeCustomerInformationParm, dbConnection);
+            }
         }
     }
 }

@@ -5,23 +5,78 @@
 }
 
 <div class="container mt-5">
+    <div class="row">
+        <!-- First Column -->
+        <div class="col-md-6">
+            <h3>Case Information</h3>
+            <div class="form-group mt-2">
+                <label for="caseId">Case ID:</label>
+                <input type="text" name="CaseId" class="form-control" value="@Model.CaseId" disabled />
+            </div>
+            <div class="form-group mt-2">
+                <label>Account:</label>
+                <input type="text" class="form-control" value="@Model.AccountId" disabled />
+            </div>
+            <div class="form-group mt-2">
+                <label>Incident Type:</label>
+                <input type="text" class="form-control" value="Repair Request" disabled />
+            </div>
+        </div>
 
-    <form method="post" asp-controller="Case" asp-action="NewItem" id="case-form">
-        <div class="col-md-4 mt-2">
-            <label for="caseId">Case ID:</label>
-            <input type="text" name="CaseId" class="form-control" value="@Model.CaseId" disabled />
+        <!-- Second Column -->
+        <div class="col-md-6">
+            <h3>Customer Information</h3>
+            @if (Model.CustomerFirstName == null)
+            {
+                //Submit customer information
+                <form method="post" asp-controller="Case" asp-action="AddCustomerInformation" id="new-form">
+                    <div class="form-group mt-2">
+                        <label>First Name:</label>
+                        <input type="text" class="form-control" name="CustomerFirstName" />
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Last Name:</label>
+                        <input type="text" class="form-control" name="CustomerLastName" />
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Email:</label>
+                        <input type="text" class="form-control" name="CustomerEmailAddress" />
+                    </div>
+                    <div class="form-group mt-2">
+                        <!-- <input type="hidden" name="ReceiveNotification" value="false" /> -->
+                        <input type="checkbox" class="form-check-input" id="ReceiveNotification" name="ReceiveNotification" />
+                        <label class="form-check-label" for="ReceiveNotification">Send status + tracking emails to the customer</label>
+                    </div>
+
+                    <input type="hidden" name="CaseId" value="@Model.CaseId" />
+
+                    <button type="submit" class="btn btn-outline-primary btn-sm mt-2" id="submit-button">Add Customer</button>
+                </form>
+            } 
+            
+            else
+            {
+                //Diplay populated customer information
+                <div class="form-group mt-2">
+                    <label>First Name:</label>
+                    <input type="text" class="form-control" name="CustomerFirstName" value="@Model.CustomerFirstName" disabled />
+                </div>
+                <div class="form-group mt-2">
+                    <label>Last Name:</label>
+                    <input type="text" class="form-control" name="CustomerLastName" value="@Model.CustomerLastName" disabled />
+                </div>
+                <div class="form-group mt-2">
+                    <label>Email:</label>
+                    <input type="text" class="form-control" name="CustomerEmail" value="@Model.CustomerEmailAddress" disabled />
+                </div>
+                <div class="form-group mt-2">
+                    <input type="checkbox" class="form-check-input" id="ReceiveNotification" name="ReceiveNotification" disabled @((bool)Model.ReceiveNotification ? "checked" : "")>
+                    <label class="form-check-label" for="ReceiveNotification">Send status + tracking emails to the customer</label>
+                </div>
+                <a href="@Url.Action("RemoveCustomerInformation", "Case", new { CaseId = Model.CaseId })" class="btn btn-outline-danger btn-sm mt-2">Remove Customer</a>
+            }
         </div>
-        <div class="col-md-4 mt-2">
-            <label>Account:</label>
-            <input type="text" class="form-control" value="@Model.AccountId" disabled />
-        </div>
-        <div class="col-md-4 mt-2">
-            <label>Incident Type:</label>
-            <input type="text" class="form-control" value="Repair Request" disabled />
-        </div>
-        <!-- Repeat similar structure for other properties -->
-        <!-- Removed the submit button -->
-    </form>
+    </div>
 
     <div class="mt-4">
         <h5>Items and Issues</h5>
@@ -50,7 +105,7 @@
                             @if(item.ItemIssues.Count < 1)
                             {
                                 <li class="list-group-item">
-                                    <p class="mb-1 mt-2">Add issue</p>
+                                    <p class="mb-1 mt-2 text-danger">Add at least one issue</p>
                                 </li>
                             }
 
@@ -64,25 +119,23 @@
                             }
 
                             <div class="mb-1 mt-1">
-                                <a href="@Url.Action("NewItemIssue", "Case", new { CaseId = Model.CaseId, ItemId = item.ItemId })" class="btn btn-primary btn-sm">Add Issue</a>
+                                <a href="@Url.Action("NewItemIssue", "Case", new { CaseId = Model.CaseId, ItemId = item.ItemId })" class="btn btn-outline-primary btn-sm mt-2">Add Issue</a>
                             </div>
                         </ul>
                     </div>
                 </div>
             }
-
-
         }
         <div class="mt-3 mb-4">
             <a href="@Url.Action("NewItem", "Case", new {Model.CaseId})" class="btn btn-primary btn-sm mt-1">Add Item</a>
         </div>
-
-        @if (Model.Items.Count > 0)
-        {
-            <div class="mb-4"> 
-            <a href="@Url.Action("SubmitCase", "Case", new {Model.CaseId})" class="btn btn-primary mt-1">Submit Repair</a>
-            <a href="@Url.Action("SaveDraft", "Case", new {Model.CaseId})" class="btn btn-primary mt-1">Save Draft</a>
+        
+            <div class="mb-4">
+            @if (Model.Items.Count > 0)
+            {
+                <a href="@Url.Action("SubmitCase", "Case", new {Model.CaseId})" class="btn btn-success mt-1">Submit Repair</a>
+            }
+                <a href="@Url.Action("SaveDraft", "Case", new {Model.CaseId})" class="btn btn-outline-primary mt-1">Save Draft</a>
             </div>
-        }   
     </div>
 </div>

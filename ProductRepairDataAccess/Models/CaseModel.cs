@@ -15,7 +15,11 @@ namespace ProductRepairDataAccess.Models
         public SalesChannel SalesChannel { get; set; }
         public CaseStatus Status { get; set; }
         public List<ItemModel> Items { get; set; } = new List<ItemModel>();
-        public CustomerModel Customer { get; set; }
+        public string? CustomerFirstName { get; set; }
+        public string? CustomerLastName { get; set; }
+        public string? CustomerEmailAddress { get; set; }
+        public Language Language { get; set; }
+        public bool? ReceiveNotification { get; set; }
         public List<CommentModel>? Comments { get; set; } = new List<CommentModel>();
     }
 }

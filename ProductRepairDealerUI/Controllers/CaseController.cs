@@ -89,6 +89,35 @@ namespace ProductRepairDealerUI.Controllers
             return View("ViewCase", caseModel);
         }
 
+        [HttpPost]
+        public ActionResult AddCustomerInformation (CaseModel newCustomerCaseModel)
+        {  
+            if (Request.Form["ReceiveNotification"] == "on")
+            {
+                newCustomerCaseModel.ReceiveNotification = true;
+            }
+            else
+            {
+                newCustomerCaseModel.ReceiveNotification = false;
+            }
+
+            CaseHelpers.AddCustomerInformationToCase(newCustomerCaseModel, _dbConnection);
+
+            CaseModel caseModel = CaseHelpers.GetCaseModel(newCustomerCaseModel.CaseId, _dbConnection);
+
+            return View("ViewCase", caseModel);
+        }
+
+        public ActionResult RemoveCustomerInformation (int caseId)
+        {
+
+            CaseHelpers.RemoveCustomerInformationFromCase(caseId, _dbConnection);
+
+            CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, _dbConnection);
+
+            return View("ViewCase", caseModel);
+        }
+
         public ActionResult SubmitCase(int caseId)
         {
             CaseHelpers.UpdateCaseStatus(caseId,"Open", _dbConnection);
@@ -124,6 +153,8 @@ namespace ProductRepairDealerUI.Controllers
         public ActionResult CancelCase(int caseId)
         {
             CaseHelpers.UpdateCaseStatus(caseId, "Canceled", _dbConnection);
+
+            CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, _dbConnection);
 
             return View();
         }
