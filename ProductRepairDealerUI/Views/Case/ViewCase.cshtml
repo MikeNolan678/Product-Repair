@@ -1,4 +1,4 @@
-﻿@model ProductRepairDataAccess.Models.CaseModel
+﻿@model ProductRepairDataAccess.Models.Case
 
 @{
     ViewBag.Title = "View Case";
@@ -80,6 +80,13 @@
 
     <div class="mt-4">
         <h5>Items and Issues</h5>
+        @if (Model.Items.Count < 1)
+        {
+            <li class="list-group-item">
+                <p class="mb-1 mt-2 text-danger">Add at least one item</p>
+            </li>
+        }
+
         @if (Model.Items != null)
         {
             @foreach (var item in Model.Items)

@@ -10,11 +10,11 @@ namespace ProductRepairDataAccess.SQL
 {
     public static class Configuration
     {
-        private static readonly SQLConnectionConfigModel _connectionString = new SQLConnectionConfigModel();
+        private static readonly SQLConnectionConfig _connectionString = new SQLConnectionConfig();
 
-        public static SQLConnectionConfigModel GetConfigurationSettings(IConfiguration configuration)
+        public static SQLConnectionConfig GetConfigurationSettings(IConfiguration configuration)
         {
-            SQLConnectionConfigModel sqlConnectionConfig = new SQLConnectionConfigModel();
+            SQLConnectionConfig sqlConnectionConfig = new SQLConnectionConfig();
 
             configuration.GetSection("ConnectionStrings").Bind(_connectionString);
             sqlConnectionConfig.DbConnection = _connectionString.DbConnection;

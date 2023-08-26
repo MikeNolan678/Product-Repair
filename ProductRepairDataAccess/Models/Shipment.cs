@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace ProductRepairDataAccess.Models
 {
-    public class ShipmentModel
+    public class Shipment
     {
         public string ShipmentId { get; set; }
-        public List<WorkOrderModel> WorkOrders { get; set; }
+        public List<WorkOrder> WorkOrders { get; set; }
         public RepairCentres RepairCentre { get; set; }
     }
 }

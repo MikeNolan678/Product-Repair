@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProductRepairDataAccess.Models
 {
-    public class NewItemIssueModel
+    public class NewItemIssue
     {
         public int CaseId { get; set; }
         public Guid ItemId { get; set; }

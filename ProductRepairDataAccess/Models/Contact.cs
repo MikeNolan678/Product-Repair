@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProductRepairDataAccess.Models
 {
-    public class ContactModel
+    public class Contact
     {
         public int ContactId { get; set; }
         public ContactType Type { get; set; }

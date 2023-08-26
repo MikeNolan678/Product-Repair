@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ProductRepairDataAccess.Models
 {
-    public class WorkOrderModel
+    public class Account
     {
-        public string WorkOrderId { get; set; }
-        public List<CommentModel> Comments { get; set; }
+        public string AccountId { get; set; }
+        public string AccountName { get; set; }
+        public Contact Contact { get; set; }
     }
 }
