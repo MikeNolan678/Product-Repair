@@ -1,16 +1,16 @@
-﻿@model ProductRepairDataAccess.Models.CasesModel
+﻿@model ProductRepairDataAccess.Models.Cases
 
 <div class="mt-4">
     <h5>Draft Cases</h5>
-    @if (Model.Cases != null)
+    @if (Model.CasesList != null)
     {
 
-        if(Model.Cases.Count == 0)
+        if(Model.CasesList.Count == 0)
         {
             <p>No draft cases</p>
         }
 
-        @foreach (var draftCase in Model.Cases)
+        @foreach (var draftCase in Model.CasesList)
         {
             <div class="card mt-4">
                 <div class="card-header bg-primary text-white">

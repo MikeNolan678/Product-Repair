@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProductRepairDataAccess.Models
 {
-    public class CasesModel
+    public class Cases
     {
-        public List<CaseModel> Cases { get; set; } = new List<CaseModel>();
+        public List<Case> CasesList { get; set; } = new List<Case>();
     }
 }

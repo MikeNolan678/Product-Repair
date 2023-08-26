@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProductRepairDataAccess.Models
 {
-    public class ItemIssueModel
+    public class ItemIssue
     {
         public IssueCategory IssueCategory { get; set; }
         public IssueArea IssueArea { get; set; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProductRepairDataAccess.Models
 {
-    public class NewCaseModel
+    public class NewCase
     {
         public string ItemNumber { get; set; }
         public string ColorCode { get; set; }

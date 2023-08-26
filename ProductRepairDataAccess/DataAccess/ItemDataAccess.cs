@@ -15,9 +15,9 @@ using Dapper;
 
 namespace ProductRepairDataAccess.Helpers
 {
-    public class ItemHelpers
+    public class ItemDataAccess
     {
-        public static void AddItemToCase(NewCaseModel newCaseModel, string dbConnection)
+        public static void AddItemToCase(NewCase newCaseModel, string dbConnection)
         {
             Guid id = Guid.NewGuid();
 
@@ -40,9 +40,9 @@ namespace ProductRepairDataAccess.Helpers
             }
         }
 
-        public static List<ItemModel> GetItemsFromCase (int caseId, string dbConnection)
+        public static List<Item> GetItemsFromCase (int caseId, string dbConnection)
         {
-            var itemList = new List<ItemModel>();
+            var itemList = new List<Item>();
 
             string itemsFromCaseSql = @"SELECT * FROM [dbo].[Items] WHERE CaseId = @CaseId";
 
@@ -51,7 +51,7 @@ namespace ProductRepairDataAccess.Helpers
                 CaseId = caseId
             };
 
-           itemList = DataAccess.LoadRecord<ItemModel, dynamic>
+           itemList = DataAccess.LoadRecord<Item, dynamic>
                         (itemsFromCaseSql, 
                         itemsFromCaseParm,
                         dbConnection).ToList();
@@ -60,7 +60,7 @@ namespace ProductRepairDataAccess.Helpers
             {
                 if (item.ItemIssues != null && item.ItemIssues.Count > 0)
                 {
-                    List<ItemIssueModel> itemIssues = new List<ItemIssueModel>();
+                    List<ItemIssue> itemIssues = new List<ItemIssue>();
 
                     itemIssues = GetItemIssueFromItem(item.ItemId, dbConnection);
 
@@ -70,9 +70,9 @@ namespace ProductRepairDataAccess.Helpers
             return itemList;
         }
 
-        public static List<ItemIssueModel> GetItemIssueFromItem (Guid ItemId, string dbConnection)
+        public static List<ItemIssue> GetItemIssueFromItem (Guid ItemId, string dbConnection)
         {
-            List<ItemIssueModel> itemIssues = new List<ItemIssueModel>();
+            List<ItemIssue> itemIssues = new List<ItemIssue>();
 
             string itemIssueFromItemSql = @"SELECT * FROM [dbo].[ItemIssues]
                                        WHERE ItemId = @ItemId";
@@ -82,7 +82,7 @@ namespace ProductRepairDataAccess.Helpers
                 ItemId = ItemId
             };
 
-            itemIssues = DataAccess.LoadRecord<ItemIssueModel, dynamic>
+            itemIssues = DataAccess.LoadRecord<ItemIssue, dynamic>
                         (itemIssueFromItemSql,
                         itemIssueFromItemParm,
                         dbConnection).ToList();
@@ -91,9 +91,9 @@ namespace ProductRepairDataAccess.Helpers
 
         }
 
-        public static ItemModel GetItemModel(Guid itemId, string dbConnection)
+        public static Item GetItemModel(Guid itemId, string dbConnection)
         {
-            ItemModel itemModel = new ItemModel();
+            Item itemModel = new Item();
 
             string itemModelSql = @"SELECT * FROM [dbo].[Items]
                                        WHERE ItemId = @ItemId";
@@ -102,13 +102,13 @@ namespace ProductRepairDataAccess.Helpers
 
             using (IDbConnection connection = new SqlConnection(dbConnection))
             {
-                itemModel = connection.QuerySingleOrDefault<ItemModel>(itemModelSql, itemModelParameters);
+                itemModel = connection.QuerySingleOrDefault<Item>(itemModelSql, itemModelParameters);
             }
 
             return itemModel;
         }
 
-        public static void AddItemIssueToItem(NewItemIssueModel newItemIssue, string dbConnection)
+        public static void AddItemIssueToItem(NewItemIssue newItemIssue, string dbConnection)
         {
             Guid issueId = Guid.NewGuid();
 

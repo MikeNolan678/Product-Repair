@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace ProductRepairDataAccess.Models
 {
-    public class SQLConnectionConfigModel
+    public class Comment
     {
-        public string DbConnection { get; set; }
+        public string CommentId { get; set; }
+        public string CommentContent { get; set; }
     }
 }

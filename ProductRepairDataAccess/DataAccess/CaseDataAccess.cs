@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace ProductRepairDataAccess.Helpers
 {
-    public class CaseHelpers
+    public class CaseDataAccess
     {
         public static int CreateCase(string accountId, IncidentType incidentType, SalesChannel salesChannel, CaseStatus caseStatus, string dbConnection)
         {
@@ -42,7 +42,7 @@ namespace ProductRepairDataAccess.Helpers
 
         public static void UpdateCaseStatus(int caseId,string status, string dbConnection)
         {
-            CaseModel caseModel = CaseHelpers.GetCaseModel(caseId, dbConnection);
+            Case caseModel = CaseDataAccess.GetCaseModel(caseId, dbConnection);
 
             string updateCaseStatusSql = @"UPDATE [dbo].[Case]
                                         SET Status = @Status 
@@ -60,9 +60,9 @@ namespace ProductRepairDataAccess.Helpers
             }
         }
 
-        public static CaseModel GetCaseModel(int caseId, string dbConnection)
+        public static Case GetCaseModel(int caseId, string dbConnection)
         {
-            CaseModel caseModel = new CaseModel();
+            Case caseModel = new Case();
 
             caseModel.CaseId = caseId;
 
@@ -73,14 +73,14 @@ namespace ProductRepairDataAccess.Helpers
 
             using (IDbConnection connection = new SqlConnection(dbConnection))
             {
-                caseModel = connection.QuerySingleOrDefault<CaseModel>(caseModelSql, caseModelParameters);
+                caseModel = connection.QuerySingleOrDefault<Case>(caseModelSql, caseModelParameters);
             }
             return BuildCaseModel(dbConnection, caseModel);
         }
 
-        public static CaseModel BuildCaseModel (string dbConnection, CaseModel caseModel)
+        public static Case BuildCaseModel (string dbConnection, Case caseModel)
         {
-            var caseItems = ItemHelpers.GetItemsFromCase(caseModel.CaseId, dbConnection);
+            var caseItems = ItemDataAccess.GetItemsFromCase(caseModel.CaseId, dbConnection);
 
             if (caseItems != null && caseItems.Count > 0)
             {
@@ -88,7 +88,7 @@ namespace ProductRepairDataAccess.Helpers
 
                 foreach (var item in caseModel.Items)
                 {
-                    var itemIssues = ItemHelpers.GetItemIssueFromItem(item.ItemId, dbConnection);
+                    var itemIssues = ItemDataAccess.GetItemIssueFromItem(item.ItemId, dbConnection);
 
                     if (itemIssues != null && itemIssues.Count > 0)
                     {
@@ -99,9 +99,9 @@ namespace ProductRepairDataAccess.Helpers
             return caseModel;
         }
 
-        public static List<CaseModel> GetCases(string caseStatus, string accountId, string dbConnection)
+        public static List<Case> GetCases(string caseStatus, string accountId, string dbConnection)
         {
-            List<CaseModel> caseModels = new List<CaseModel>();
+            List<Case> caseModels = new List<Case>();
 
             string getCasesSql = @"SELECT * FROM [dbo].[Case]
                                     WHERE AccountId = @AccountId
@@ -115,7 +115,7 @@ namespace ProductRepairDataAccess.Helpers
 
             using (IDbConnection connection = new SqlConnection(dbConnection))
             {
-                caseModels = DataAccess.LoadRecord<CaseModel, dynamic>(getCasesSql, getCasesParm, dbConnection).ToList();
+                caseModels = DataAccess.LoadRecord<Case, dynamic>(getCasesSql, getCasesParm, dbConnection).ToList();
             }
 
             foreach (var caseModel in caseModels) 
@@ -126,7 +126,7 @@ namespace ProductRepairDataAccess.Helpers
             return caseModels;
         }
 
-        public static void AddCustomerInformationToCase(CaseModel caseModel, string dbConnection)
+        public static void AddCustomerInformationToCase(Case caseModel, string dbConnection)
         {
             string addCustomerInformationSql = @"UPDATE [dbo].[Case]
                                         SET CustomerFirstName = @CustomerFirstName, 
