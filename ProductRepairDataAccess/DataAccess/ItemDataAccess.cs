@@ -29,19 +29,16 @@ public class ItemDataAccess : IItemDataAccess
                                         VALUES (@ItemId, @ItemNumber, @ColorCode, @Size, 'New', @CaseId)";
 
         var addItemToCaseParm = new
-        {
-            CaseId = newCaseModel.CaseId,
-            ItemNumber = newCaseModel.ItemNumber,
-            ColorCode = newCaseModel.ColorCode,
-            Size = newCaseModel.Size,
-            Status = ItemStatus.New,
-            ItemId = id,
-        };
-
-        using (IDbConnection connection = new SqlConnection(_connectionString))
-        {
-            _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
-        }
+            {
+                CaseId = newCaseModel.CaseId,
+                ItemNumber = newCaseModel.ItemNumber,
+                ColorCode = newCaseModel.ColorCode,
+                Size = newCaseModel.Size,
+                Status = ItemStatus.New,
+                ItemId = id,
+            };
+        
+        _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
     }
 
     public List<Item> GetItemsFromCase(int caseId)
@@ -118,18 +115,15 @@ public class ItemDataAccess : IItemDataAccess
                                         VALUES (@IssueId, @ItemId, @IssueCategory, @IssueArea, @ItemOrientation, @IssueDetails)";
 
         var addItemToCaseParm = new
-        {
-            IssueId = issueId,
-            ItemId = newItemIssue.ItemId,
-            IssueCategory = newItemIssue.IssueCategory,
-            IssueArea = newItemIssue.IssueArea,
-            ItemOrientation = newItemIssue.ItemOrientation,
-            IssueDetails = newItemIssue.IssueDetails
-        };
+            {
+                IssueId = issueId,
+                ItemId = newItemIssue.ItemId,
+                IssueCategory = newItemIssue.IssueCategory,
+                IssueArea = newItemIssue.IssueArea,
+                ItemOrientation = newItemIssue.ItemOrientation,
+                IssueDetails = newItemIssue.IssueDetails
+            };
 
-        using (IDbConnection connection = new SqlConnection(_connectionString))
-        {
-            _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
-        }
+        _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
     }
 }
