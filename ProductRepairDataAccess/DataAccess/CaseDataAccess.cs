@@ -54,15 +54,12 @@ public class CaseDataAccess : ICaseDataAccess
                                         WHERE CaseId = @CaseId";
 
         var updateCaseStatusParm = new
-        {
-            CaseId = caseId,
-            Status = status
-        };
+            {
+                CaseId = caseId,
+                Status = status
+            };
 
-        using (IDbConnection connection = new SqlConnection(_connectionString))
-        {
-            _dataAccess.SaveData<dynamic>(updateCaseStatusSql, updateCaseStatusParm);
-        }
+       _dataAccess.SaveData<dynamic>(updateCaseStatusSql, updateCaseStatusParm);
     }
 
     public Case GetCaseModel(int caseId)
@@ -113,15 +110,13 @@ public class CaseDataAccess : ICaseDataAccess
                                     AND Status = @CaseStatus";
 
         var getCasesParm = new
-        {
-            AccountId = accountId,
-            CaseStatus = caseStatus
-        };
+            {
+                AccountId = accountId,
+                CaseStatus = caseStatus
+            };
 
-        using (IDbConnection connection = new SqlConnection(_connectionString))
-        {
-            caseModels = _dataAccess.LoadRecord<Case, dynamic>(getCasesSql, getCasesParm).ToList();
-        }
+        caseModels = _dataAccess.LoadRecord<Case, dynamic>(getCasesSql, getCasesParm).ToList();
+       
 
         foreach (var caseModel in caseModels)
         {
@@ -141,18 +136,15 @@ public class CaseDataAccess : ICaseDataAccess
                                         WHERE CaseId = @CaseId";
 
         var addCustomerInformationParm = new
-        {
-            CaseId = caseModel.CaseId,
-            CustomerFirstName = caseModel.CustomerFirstName,
-            CustomerLastName = caseModel.CustomerLastName,
-            CustomerEmailAddress = caseModel.CustomerEmailAddress,
-            ReceiveNotification = caseModel.ReceiveNotification
-        };
+            {
+                CaseId = caseModel.CaseId,
+                CustomerFirstName = caseModel.CustomerFirstName,
+                CustomerLastName = caseModel.CustomerLastName,
+                CustomerEmailAddress = caseModel.CustomerEmailAddress,
+                ReceiveNotification = caseModel.ReceiveNotification
+            };
 
-        using (IDbConnection connection = new SqlConnection(_connectionString))
-        {
-            _dataAccess.SaveData<dynamic>(addCustomerInformationSql, addCustomerInformationParm);
-        }
+        _dataAccess.SaveData<dynamic>(addCustomerInformationSql, addCustomerInformationParm);
     }
 
     public void RemoveCustomerInformationFromCase(int caseId)
@@ -165,17 +157,15 @@ public class CaseDataAccess : ICaseDataAccess
                                         WHERE CaseId = @CaseId";
 
         var removeCustomerInformationParm = new
-        {
-            CaseId = caseId,
-            CustomerFirstName = (string?)null,
-            CustomerLastName = (string?)null,
-            CustomerEmailAddress = (string?)null,
-            ReceiveNotification = (bool?)null
-        };
+            {
+                CaseId = caseId,
+                CustomerFirstName = (string?)null,
+                CustomerLastName = (string?)null,
+                CustomerEmailAddress = (string?)null,
+                ReceiveNotification = (bool?)null
+            };
 
-        using (IDbConnection connection = new SqlConnection(_connectionString))
-        {
-            _dataAccess.SaveData<dynamic>(removeCustomerInformationSql, removeCustomerInformationParm);
-        }
+         _dataAccess.SaveData<dynamic>(removeCustomerInformationSql, removeCustomerInformationParm);
+        
     }
 }
