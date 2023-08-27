@@ -1,41 +1,34 @@
 ﻿using Microsoft.AspNetCore.Http;
 using ProductRepairDataAccess.Interfaces;
-using ProductRepairDataAccess.SQL;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProductRepairDataAccess.Services;
 
 public class AccountService : IAccountService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IDataAccess _dataAccess;
 
-    public AccountService(IHttpContextAccessor httpContextAccessor)
+    public AccountService(IHttpContextAccessor httpContextAccessor, IDataAccess dataAccess)
     {
         _httpContextAccessor = httpContextAccessor;
+        _dataAccess = dataAccess;
     }
 
     public string GetUserAccountId(string dbConnection)
     {
         string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        string Sql = @"SELECT AccountId
+        string getUserAccountIdSql = @"SELECT AccountId
                             FROM AspNetUsers
                             WHERE Id = @Id;";
 
-        var Parm = new
+        var getUserAccountParm = new
         {
             Id = userId
         };
 
-        var accountId = DataAccess.LoadRecord<string, dynamic>(Sql, Parm, dbConnection);
+        var accountId = _dataAccess.LoadRecord<string, dynamic>(getUserAccountIdSql, getUserAccountParm, dbConnection);
 
         return accountId.FirstOrDefault(); // Return the AccountId
     }

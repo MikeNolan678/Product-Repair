@@ -1,12 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using ProductRepairDataAccess.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.SQL;
+namespace ProductRepairDataAccess.DataAccess;
 
 public static class Configuration
 {

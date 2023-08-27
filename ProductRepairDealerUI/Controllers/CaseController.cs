@@ -1,14 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.CodeAnalysis.Operations;
-using ProductRepairDataAccess;
-using ProductRepairDataAccess.Helpers;
+﻿using Microsoft.AspNetCore.Mvc;
+using ProductRepairDataAccess.DataAccess;
 using ProductRepairDataAccess.Interfaces;
 using ProductRepairDataAccess.Models;
+using ProductRepairDataAccess.Models.Entities;
 using ProductRepairDataAccess.Models.Enums;
-using ProductRepairDataAccess.Services;
-using ProductRepairDataAccess.SQL;
 
 namespace ProductRepairDealerUI.Controllers;
 
@@ -16,13 +11,24 @@ public class CaseController : Controller
 {
     private readonly IAccountService _accountService;
     private readonly string _dbConnection;
+    private readonly IDataAccess _dataAccess;
+    private readonly ICaseDataAccess _caseDataAccess;
+    private readonly IItemDataAccess _itemDataAccess;
 
-    public CaseController(IAccountService accountService, IConfiguration configuration)
+    public CaseController(
+        IAccountService accountService, 
+        IConfiguration configuration, 
+        IDataAccess dataAccess, 
+        ICaseDataAccess caseDataAccess, 
+        IItemDataAccess itemDataAccess)
     {
         var configSettings = Configuration.GetConfigurationSettings(configuration);
 
         _dbConnection = configSettings.DbConnection;
         _accountService = accountService;
+        _dataAccess = dataAccess;
+        _caseDataAccess = caseDataAccess;
+        _itemDataAccess = itemDataAccess;
     }
 
     // GET: CaseController
@@ -30,7 +36,7 @@ public class CaseController : Controller
     {
         string accountId = _accountService.GetUserAccountId(_dbConnection);
 
-        int caseId = CaseDataAccess.CreateCase(
+        int caseId = _caseDataAccess.CreateCase(
                     accountId,
                     IncidentType.RepairRequest,
                     SalesChannel.Dealer,
@@ -49,14 +55,14 @@ public class CaseController : Controller
     // GET: CaseController
     public ActionResult ViewCase(int caseId)
     {
-        Case caseModel = CaseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
 
         return View(caseModel);
     }
 
     public ActionResult NewItem(int caseId)
     {
-        Case caseModel = CaseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
 
         return View(caseModel);
     }
@@ -65,16 +71,16 @@ public class CaseController : Controller
     public ActionResult AddItem(NewCase newItem)
     {
         // Process the other fields submitted in the form and update the datasources
-        ItemDataAccess.AddItemToCase(newItem, _dbConnection);
+        _itemDataAccess.AddItemToCase(newItem, _dbConnection);
 
-        Case caseModel = CaseDataAccess.GetCaseModel(newItem.CaseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(newItem.CaseId, _dbConnection);
 
         return View("ViewCase", caseModel);
     }
 
     public ActionResult NewItemIssue(int caseId, Guid ItemId)
     {
-        Item itemModel = ItemDataAccess.GetItemModel(ItemId, _dbConnection);
+        Item itemModel =_itemDataAccess.GetItemModel(ItemId, _dbConnection);
 
         return View(itemModel);
     }
@@ -83,9 +89,9 @@ public class CaseController : Controller
     public ActionResult AddItemIssue(NewItemIssue newItemIssue)
     {
         // Process the other fields submitted in the form and update the datasources
-        ItemDataAccess.AddItemIssueToItem(newItemIssue, _dbConnection);
+        _itemDataAccess.AddItemIssueToItem(newItemIssue, _dbConnection);
 
-        Case caseModel = CaseDataAccess.GetCaseModel(newItemIssue.CaseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(newItemIssue.CaseId, _dbConnection);
 
         return View("ViewCase", caseModel);
     }
@@ -102,9 +108,9 @@ public class CaseController : Controller
             newCustomerCaseModel.ReceiveNotification = false;
         }
 
-        CaseDataAccess.AddCustomerInformationToCase(newCustomerCaseModel, _dbConnection);
+        _caseDataAccess.AddCustomerInformationToCase(newCustomerCaseModel, _dbConnection);
 
-        Case caseModel = CaseDataAccess.GetCaseModel(newCustomerCaseModel.CaseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(newCustomerCaseModel.CaseId, _dbConnection);
 
         return View("ViewCase", caseModel);
     }
@@ -112,23 +118,23 @@ public class CaseController : Controller
     public ActionResult RemoveCustomerInformation (int caseId)
     {
 
-        CaseDataAccess.RemoveCustomerInformationFromCase(caseId, _dbConnection);
+        _caseDataAccess.RemoveCustomerInformationFromCase(caseId, _dbConnection);
 
-        Case caseModel = CaseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
 
         return View("ViewCase", caseModel);
     }
 
     public ActionResult SubmitCase(int caseId)
     {
-        CaseDataAccess.UpdateCaseStatus(caseId,"Open", _dbConnection);
+        _caseDataAccess.UpdateCaseStatus(caseId,"Open", _dbConnection);
 
         return View();
     }
 
     public ActionResult SaveDraft(int caseId)
     {
-        Case caseModel = CaseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
 
         return View(caseModel);
     }
@@ -139,23 +145,23 @@ public class CaseController : Controller
 
         Cases casesModel = new Cases();
 
-        casesModel.CasesList.AddRange(CaseDataAccess.GetCases("draft", accountId, _dbConnection));
+        casesModel.CasesList.AddRange(_caseDataAccess.GetCases("draft", accountId, _dbConnection));
 
         return View(casesModel);
     }
 
     public ActionResult CreateShipment(int caseId)
     {
-        Case caseModel = CaseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
 
         return View(caseModel);
     }
 
     public ActionResult CancelCase(int caseId)
     {
-        CaseDataAccess.UpdateCaseStatus(caseId, "Canceled", _dbConnection);
+        _caseDataAccess.UpdateCaseStatus(caseId, "Canceled", _dbConnection);
 
-        Case caseModel = CaseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
 
         return View();
     }

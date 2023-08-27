@@ -1,23 +1,22 @@
 ﻿using Microsoft.Data.SqlClient;
 using ProductRepairDataAccess.Models;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ProductRepairDataAccess.Models.Enums;
-using ProductRepairDataAccess.SQL;
-using System.Data.Entity.Core.Metadata.Edm;
-using System.Data.Entity.Core.Common.CommandTrees;
 using Dapper;
+using ProductRepairDataAccess.Interfaces;
+using ProductRepairDataAccess.Models.Entities;
 
-namespace ProductRepairDataAccess.Helpers;
+namespace ProductRepairDataAccess.DataAccess;
 
-public class ItemDataAccess
+public class ItemDataAccess : IItemDataAccess
 {
-    public static void AddItemToCase(NewCase newCaseModel, string dbConnection)
+    private readonly IDataAccess _dataAccess;
+    public ItemDataAccess(IDataAccess dataAccess)
+    {
+        _dataAccess = dataAccess;
+    }
+
+    public void AddItemToCase(NewCase newCaseModel, string dbConnection)
     {
         Guid id = Guid.NewGuid();
 
@@ -36,11 +35,11 @@ public class ItemDataAccess
 
         using (IDbConnection connection = new SqlConnection(dbConnection))
         {
-            DataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm, dbConnection);
+            _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm, dbConnection);
         }
     }
 
-    public static List<Item> GetItemsFromCase (int caseId, string dbConnection)
+    public List<Item> GetItemsFromCase(int caseId, string dbConnection)
     {
         var itemList = new List<Item>();
 
@@ -51,10 +50,10 @@ public class ItemDataAccess
             CaseId = caseId
         };
 
-       itemList = DataAccess.LoadRecord<Item, dynamic>
-                    (itemsFromCaseSql, 
-                    itemsFromCaseParm,
-                    dbConnection).ToList();
+        itemList = _dataAccess.LoadRecord<Item, dynamic>
+                     (itemsFromCaseSql,
+                     itemsFromCaseParm,
+                     dbConnection).ToList();
 
         foreach (var item in itemList)
         {
@@ -70,7 +69,7 @@ public class ItemDataAccess
         return itemList;
     }
 
-    public static List<ItemIssue> GetItemIssueFromItem (Guid ItemId, string dbConnection)
+    public List<ItemIssue> GetItemIssueFromItem(Guid ItemId, string dbConnection)
     {
         List<ItemIssue> itemIssues = new List<ItemIssue>();
 
@@ -82,7 +81,7 @@ public class ItemDataAccess
             ItemId = ItemId
         };
 
-        itemIssues = DataAccess.LoadRecord<ItemIssue, dynamic>
+        itemIssues = _dataAccess.LoadRecord<ItemIssue, dynamic>
                     (itemIssueFromItemSql,
                     itemIssueFromItemParm,
                     dbConnection).ToList();
@@ -91,7 +90,7 @@ public class ItemDataAccess
 
     }
 
-    public static Item GetItemModel(Guid itemId, string dbConnection)
+    public Item GetItemModel(Guid itemId, string dbConnection)
     {
         Item itemModel = new Item();
 
@@ -108,7 +107,7 @@ public class ItemDataAccess
         return itemModel;
     }
 
-    public static void AddItemIssueToItem(NewItemIssue newItemIssue, string dbConnection)
+    public void AddItemIssueToItem(NewItemIssue newItemIssue, string dbConnection)
     {
         Guid issueId = Guid.NewGuid();
 
@@ -127,7 +126,7 @@ public class ItemDataAccess
 
         using (IDbConnection connection = new SqlConnection(dbConnection))
         {
-            DataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm, dbConnection);
+            _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm, dbConnection);
         }
     }
 }

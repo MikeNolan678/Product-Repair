@@ -1,23 +1,25 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using ProductRepairDataAccess.Models;
+using ProductRepairDataAccess.Interfaces;
+using ProductRepairDataAccess.Models.Entities;
 using ProductRepairDataAccess.Models.Enums;
-using ProductRepairDataAccess.SQL;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Helpers;
+namespace ProductRepairDataAccess.DataAccess;
 
-public class CaseDataAccess
+public class CaseDataAccess : ICaseDataAccess
 {
-    public static int CreateCase(string accountId, IncidentType incidentType, SalesChannel salesChannel, CaseStatus caseStatus, string dbConnection)
+    private readonly IDataAccess _dataAccess;
+    private readonly IItemDataAccess _itemDataAccess;
+
+    public CaseDataAccess(IDataAccess dataAccess, IItemDataAccess itemDataAccess)
+    {
+        _dataAccess = dataAccess;
+        _itemDataAccess = itemDataAccess;
+    }
+
+
+    public int CreateCase(string accountId, IncidentType incidentType, SalesChannel salesChannel, CaseStatus caseStatus, string dbConnection)
     {
         string createCaseSql = @"INSERT INTO [dbo].[Case] (AccountId, IncidentType, SalesChannel, Status)
                              VALUES
@@ -40,15 +42,15 @@ public class CaseDataAccess
         }
     }
 
-    public static void UpdateCaseStatus(int caseId,string status, string dbConnection)
+    public void UpdateCaseStatus(int caseId, string status, string dbConnection)
     {
-        Case caseModel = CaseDataAccess.GetCaseModel(caseId, dbConnection);
+        Case caseModel = GetCaseModel(caseId, dbConnection);
 
         string updateCaseStatusSql = @"UPDATE [dbo].[Case]
                                         SET Status = @Status 
                                         WHERE CaseId = @CaseId";
 
-        var updateCaseStatusParm = new 
+        var updateCaseStatusParm = new
         {
             CaseId = caseId,
             Status = status
@@ -56,11 +58,11 @@ public class CaseDataAccess
 
         using (IDbConnection connection = new SqlConnection(dbConnection))
         {
-            DataAccess.SaveData<dynamic>(updateCaseStatusSql, updateCaseStatusParm, dbConnection);
+            _dataAccess.SaveData<dynamic>(updateCaseStatusSql, updateCaseStatusParm, dbConnection);
         }
     }
 
-    public static Case GetCaseModel(int caseId, string dbConnection)
+    public Case GetCaseModel(int caseId, string dbConnection)
     {
         Case caseModel = new Case();
 
@@ -78,9 +80,9 @@ public class CaseDataAccess
         return BuildCaseModel(dbConnection, caseModel);
     }
 
-    public static Case BuildCaseModel (string dbConnection, Case caseModel)
+    public Case BuildCaseModel(string dbConnection, Case caseModel)
     {
-        var caseItems = ItemDataAccess.GetItemsFromCase(caseModel.CaseId, dbConnection);
+        var caseItems = _itemDataAccess.GetItemsFromCase(caseModel.CaseId, dbConnection);
 
         if (caseItems != null && caseItems.Count > 0)
         {
@@ -88,7 +90,7 @@ public class CaseDataAccess
 
             foreach (var item in caseModel.Items)
             {
-                var itemIssues = ItemDataAccess.GetItemIssueFromItem(item.ItemId, dbConnection);
+                var itemIssues = _itemDataAccess.GetItemIssueFromItem(item.ItemId, dbConnection);
 
                 if (itemIssues != null && itemIssues.Count > 0)
                 {
@@ -99,7 +101,7 @@ public class CaseDataAccess
         return caseModel;
     }
 
-    public static List<Case> GetCases(string caseStatus, string accountId, string dbConnection)
+    public List<Case> GetCases(string caseStatus, string accountId, string dbConnection)
     {
         List<Case> caseModels = new List<Case>();
 
@@ -108,25 +110,25 @@ public class CaseDataAccess
                                     AND Status = @CaseStatus";
 
         var getCasesParm = new
-        { 
-            AccountId = accountId, 
+        {
+            AccountId = accountId,
             CaseStatus = caseStatus
         };
 
         using (IDbConnection connection = new SqlConnection(dbConnection))
         {
-            caseModels = DataAccess.LoadRecord<Case, dynamic>(getCasesSql, getCasesParm, dbConnection).ToList();
+            caseModels = _dataAccess.LoadRecord<Case, dynamic>(getCasesSql, getCasesParm, dbConnection).ToList();
         }
 
-        foreach (var caseModel in caseModels) 
+        foreach (var caseModel in caseModels)
         {
-            BuildCaseModel(dbConnection,caseModel);
+            BuildCaseModel(dbConnection, caseModel);
         }
 
         return caseModels;
     }
 
-    public static void AddCustomerInformationToCase(Case caseModel, string dbConnection)
+    public void AddCustomerInformationToCase(Case caseModel, string dbConnection)
     {
         string addCustomerInformationSql = @"UPDATE [dbo].[Case]
                                         SET CustomerFirstName = @CustomerFirstName, 
@@ -146,11 +148,11 @@ public class CaseDataAccess
 
         using (IDbConnection connection = new SqlConnection(dbConnection))
         {
-            DataAccess.SaveData<dynamic>(addCustomerInformationSql, addCustomerInformationParm, dbConnection);
+            _dataAccess.SaveData<dynamic>(addCustomerInformationSql, addCustomerInformationParm, dbConnection);
         }
     }
 
-    public static void RemoveCustomerInformationFromCase(int caseId, string dbConnection)
+    public void RemoveCustomerInformationFromCase(int caseId, string dbConnection)
     {
         string removeCustomerInformationSql = @"UPDATE [dbo].[Case]
                                         SET CustomerFirstName = @CustomerFirstName, 
@@ -170,7 +172,7 @@ public class CaseDataAccess
 
         using (IDbConnection connection = new SqlConnection(dbConnection))
         {
-            DataAccess.SaveData<dynamic>(removeCustomerInformationSql, removeCustomerInformationParm, dbConnection);
+            _dataAccess.SaveData<dynamic>(removeCustomerInformationSql, removeCustomerInformationParm, dbConnection);
         }
     }
 }

@@ -1,17 +1,13 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
+using ProductRepairDataAccess.Interfaces;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.SQL;
+namespace ProductRepairDataAccess.DataAccess;
 
-public class DataAccess
+public class DataAccess : IDataAccess
 {
-    public static IEnumerable<T> LoadRecord<T, U>(string sqlStatement, U parameters, string connectionString)
+    public IEnumerable<T> LoadRecord<T, U>(string sqlStatement, U parameters, string connectionString)
     {
         using (IDbConnection connection = new SqlConnection(connectionString))
         {
@@ -21,7 +17,7 @@ public class DataAccess
         }
     }
 
-    public static void SaveData<T>(string sqlStatement, T parameters, string connectionString)
+    public void SaveData<T>(string sqlStatement, T parameters, string connectionString)
     {
         using (IDbConnection connection = new SqlConnection(connectionString))
         {
