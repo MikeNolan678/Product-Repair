@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ProductRepairDataAccess.Models.Enums;
 
-namespace ProductRepairDataAccess.Models.Enums
+public enum ItemOrientation
 {
-    public enum ItemOrientation
-    {
-        Front, 
-        Back, 
-        Top, 
-        Bottom, 
-        Other
-    }
+    Front, 
+    Back, 
+    Top, 
+    Bottom, 
+    Other
 }

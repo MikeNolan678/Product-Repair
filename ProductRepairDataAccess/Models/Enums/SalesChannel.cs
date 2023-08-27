@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ProductRepairDataAccess.Models.Enums;
 
-namespace ProductRepairDataAccess.Models.Enums
+public enum SalesChannel
 {
-    public enum SalesChannel
-    {
-        Dealer,
-        Retail,
-        Ecommerce
-    }
+    Dealer,
+    Retail,
+    Ecommerce
 }

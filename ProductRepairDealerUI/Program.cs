@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies; // Add this namespace for coo
 using Microsoft.AspNetCore.Authentication; // Add this namespace for authentication related types
 using ProductRepairDataAccess.Interfaces;
 using ProductRepairDataAccess.Services;
+using ProductRepairDataAccess.DataAccess;
 
 namespace ProductRepairDealerUI
 {
@@ -24,7 +25,10 @@ namespace ProductRepairDealerUI
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddHttpContextAccessor(); // Add IHttpContextAccessor for accessing HttpContext
-            builder.Services.AddScoped<IAccountService, AccountService>(); // Register the service
+            builder.Services.AddScoped<IAccountService, AccountService>(); // Register the AccountService for DI
+            builder.Services.AddScoped<IDataAccess, DataAccess>(); //Register DataAccess for DI
+            builder.Services.AddScoped<IItemDataAccess, ItemDataAccess>();
+            builder.Services.AddScoped<ICaseDataAccess, CaseDataAccess>();
 
             builder.Services.AddControllersWithViews();
 
