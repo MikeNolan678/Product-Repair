@@ -7,9 +7,17 @@ namespace ProductRepairDataAccess.DataAccess;
 
 public class DataAccess : IDataAccess
 {
-    public IEnumerable<T> LoadRecord<T, U>(string sqlStatement, U parameters, string connectionString)
+    private IConfigurationSettings _configurationSettings;
+    private string _connectionString;
+    public DataAccess(IConfigurationSettings configurationSettings)
     {
-        using (IDbConnection connection = new SqlConnection(connectionString))
+        _configurationSettings = configurationSettings;
+        _connectionString = configurationSettings.GetConnectionString();
+
+    }
+    public IEnumerable<T> LoadRecord<T, U>(string sqlStatement, U parameters)
+    {
+        using (IDbConnection connection = new SqlConnection(_connectionString))
         {
             IEnumerable<T> record = connection.Query<T>(sqlStatement, parameters);
 
@@ -17,9 +25,10 @@ public class DataAccess : IDataAccess
         }
     }
 
-    public void SaveData<T>(string sqlStatement, T parameters, string connectionString)
+    public void SaveData<T>(string sqlStatement, T parameters
+        )
     {
-        using (IDbConnection connection = new SqlConnection(connectionString))
+        using (IDbConnection connection = new SqlConnection(_connectionString))
         {
             connection.Execute(sqlStatement, parameters);
         }

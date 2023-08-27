@@ -16,15 +16,11 @@ public class CaseController : Controller
     private readonly IItemDataAccess _itemDataAccess;
 
     public CaseController(
-        IAccountService accountService, 
-        IConfiguration configuration, 
+        IAccountService accountService,
         IDataAccess dataAccess, 
         ICaseDataAccess caseDataAccess, 
         IItemDataAccess itemDataAccess)
     {
-        var configSettings = Configuration.GetConfigurationSettings(configuration);
-
-        _dbConnection = configSettings.DbConnection;
         _accountService = accountService;
         _dataAccess = dataAccess;
         _caseDataAccess = caseDataAccess;
@@ -34,14 +30,13 @@ public class CaseController : Controller
     // GET: CaseController
     public ActionResult CreateCase()
     {
-        string accountId = _accountService.GetUserAccountId(_dbConnection);
+        string accountId = _accountService.GetUserAccountId();
 
         int caseId = _caseDataAccess.CreateCase(
                     accountId,
                     IncidentType.RepairRequest,
                     SalesChannel.Dealer,
-                    CaseStatus.Draft,
-                    _dbConnection);
+                    CaseStatus.Draft);
 
         Case caseModel = new Case
         {
@@ -55,14 +50,14 @@ public class CaseController : Controller
     // GET: CaseController
     public ActionResult ViewCase(int caseId)
     {
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
 
         return View(caseModel);
     }
 
     public ActionResult NewItem(int caseId)
     {
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
 
         return View(caseModel);
     }
@@ -71,16 +66,16 @@ public class CaseController : Controller
     public ActionResult AddItem(NewCase newItem)
     {
         // Process the other fields submitted in the form and update the datasources
-        _itemDataAccess.AddItemToCase(newItem, _dbConnection);
+        _itemDataAccess.AddItemToCase(newItem);
 
-        Case caseModel = _caseDataAccess.GetCaseModel(newItem.CaseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(newItem.CaseId);
 
         return View("ViewCase", caseModel);
     }
 
     public ActionResult NewItemIssue(int caseId, Guid ItemId)
     {
-        Item itemModel =_itemDataAccess.GetItemModel(ItemId, _dbConnection);
+        Item itemModel =_itemDataAccess.GetItemModel(ItemId);
 
         return View(itemModel);
     }
@@ -89,9 +84,9 @@ public class CaseController : Controller
     public ActionResult AddItemIssue(NewItemIssue newItemIssue)
     {
         // Process the other fields submitted in the form and update the datasources
-        _itemDataAccess.AddItemIssueToItem(newItemIssue, _dbConnection);
+        _itemDataAccess.AddItemIssueToItem(newItemIssue);
 
-        Case caseModel = _caseDataAccess.GetCaseModel(newItemIssue.CaseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(newItemIssue.CaseId);
 
         return View("ViewCase", caseModel);
     }
@@ -108,9 +103,9 @@ public class CaseController : Controller
             newCustomerCaseModel.ReceiveNotification = false;
         }
 
-        _caseDataAccess.AddCustomerInformationToCase(newCustomerCaseModel, _dbConnection);
+        _caseDataAccess.AddCustomerInformationToCase(newCustomerCaseModel);
 
-        Case caseModel = _caseDataAccess.GetCaseModel(newCustomerCaseModel.CaseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(newCustomerCaseModel.CaseId);
 
         return View("ViewCase", caseModel);
     }
@@ -118,50 +113,50 @@ public class CaseController : Controller
     public ActionResult RemoveCustomerInformation (int caseId)
     {
 
-        _caseDataAccess.RemoveCustomerInformationFromCase(caseId, _dbConnection);
+        _caseDataAccess.RemoveCustomerInformationFromCase(caseId);
 
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
 
         return View("ViewCase", caseModel);
     }
 
     public ActionResult SubmitCase(int caseId)
     {
-        _caseDataAccess.UpdateCaseStatus(caseId,"Open", _dbConnection);
+        _caseDataAccess.UpdateCaseStatus(caseId,"Open");
 
         return View();
     }
 
     public ActionResult SaveDraft(int caseId)
     {
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
 
         return View(caseModel);
     }
 
     public ActionResult DraftCases()
     {
-        string accountId = _accountService.GetUserAccountId(_dbConnection);
+        string accountId = _accountService.GetUserAccountId();
 
         Cases casesModel = new Cases();
 
-        casesModel.CasesList.AddRange(_caseDataAccess.GetCases("draft", accountId, _dbConnection));
+        casesModel.CasesList.AddRange(_caseDataAccess.GetCases("draft", accountId));
 
         return View(casesModel);
     }
 
     public ActionResult CreateShipment(int caseId)
     {
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
 
         return View(caseModel);
     }
 
     public ActionResult CancelCase(int caseId)
     {
-        _caseDataAccess.UpdateCaseStatus(caseId, "Canceled", _dbConnection);
+        _caseDataAccess.UpdateCaseStatus(caseId, "Canceled");
 
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId, _dbConnection);
+        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
 
         return View();
     }

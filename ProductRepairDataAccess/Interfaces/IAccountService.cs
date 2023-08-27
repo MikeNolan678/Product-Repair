@@ -2,5 +2,5 @@
 
 public interface IAccountService
 {
-    string GetUserAccountId(string dbConnection);
+    string GetUserAccountId();
 }

@@ -29,6 +29,7 @@ namespace ProductRepairDealerUI
             builder.Services.AddScoped<IDataAccess, DataAccess>(); //Register DataAccess for DI
             builder.Services.AddScoped<IItemDataAccess, ItemDataAccess>();
             builder.Services.AddScoped<ICaseDataAccess, CaseDataAccess>();
+            builder.Services.AddScoped<IConfigurationSettings, ConfigurationSettings>();
 
             builder.Services.AddControllersWithViews();
 
