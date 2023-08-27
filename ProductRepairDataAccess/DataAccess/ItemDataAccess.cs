@@ -11,12 +11,17 @@ namespace ProductRepairDataAccess.DataAccess;
 public class ItemDataAccess : IItemDataAccess
 {
     private readonly IDataAccess _dataAccess;
-    public ItemDataAccess(IDataAccess dataAccess)
+    private readonly IConfigurationSettings _configurationSettings;
+    private readonly string _connectionString;
+    public ItemDataAccess(IDataAccess dataAccess, IConfigurationSettings configurationSettings)
     {
         _dataAccess = dataAccess;
+        _configurationSettings = configurationSettings;
+        _connectionString = configurationSettings.GetConnectionString();
+
     }
 
-    public void AddItemToCase(NewCase newCaseModel, string dbConnection)
+    public void AddItemToCase(NewCase newCaseModel)
     {
         Guid id = Guid.NewGuid();
 
@@ -33,13 +38,13 @@ public class ItemDataAccess : IItemDataAccess
             ItemId = id,
         };
 
-        using (IDbConnection connection = new SqlConnection(dbConnection))
+        using (IDbConnection connection = new SqlConnection(_connectionString))
         {
-            _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm, dbConnection);
+            _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
         }
     }
 
-    public List<Item> GetItemsFromCase(int caseId, string dbConnection)
+    public List<Item> GetItemsFromCase(int caseId)
     {
         var itemList = new List<Item>();
 
@@ -52,8 +57,7 @@ public class ItemDataAccess : IItemDataAccess
 
         itemList = _dataAccess.LoadRecord<Item, dynamic>
                      (itemsFromCaseSql,
-                     itemsFromCaseParm,
-                     dbConnection).ToList();
+                     itemsFromCaseParm).ToList();
 
         foreach (var item in itemList)
         {
@@ -61,7 +65,7 @@ public class ItemDataAccess : IItemDataAccess
             {
                 List<ItemIssue> itemIssues = new List<ItemIssue>();
 
-                itemIssues = GetItemIssueFromItem(item.ItemId, dbConnection);
+                itemIssues = GetItemIssueFromItem(item.ItemId);
 
                 item.ItemIssues.AddRange(itemIssues);
             }
@@ -69,7 +73,7 @@ public class ItemDataAccess : IItemDataAccess
         return itemList;
     }
 
-    public List<ItemIssue> GetItemIssueFromItem(Guid ItemId, string dbConnection)
+    public List<ItemIssue> GetItemIssueFromItem(Guid ItemId)
     {
         List<ItemIssue> itemIssues = new List<ItemIssue>();
 
@@ -83,14 +87,13 @@ public class ItemDataAccess : IItemDataAccess
 
         itemIssues = _dataAccess.LoadRecord<ItemIssue, dynamic>
                     (itemIssueFromItemSql,
-                    itemIssueFromItemParm,
-                    dbConnection).ToList();
+                    itemIssueFromItemParm).ToList();
 
         return itemIssues;
 
     }
 
-    public Item GetItemModel(Guid itemId, string dbConnection)
+    public Item GetItemModel(Guid itemId)
     {
         Item itemModel = new Item();
 
@@ -99,7 +102,7 @@ public class ItemDataAccess : IItemDataAccess
 
         var itemModelParameters = new { ItemId = itemId };
 
-        using (IDbConnection connection = new SqlConnection(dbConnection))
+        using (IDbConnection connection = new SqlConnection(_connectionString))
         {
             itemModel = connection.QuerySingleOrDefault<Item>(itemModelSql, itemModelParameters);
         }
@@ -107,7 +110,7 @@ public class ItemDataAccess : IItemDataAccess
         return itemModel;
     }
 
-    public void AddItemIssueToItem(NewItemIssue newItemIssue, string dbConnection)
+    public void AddItemIssueToItem(NewItemIssue newItemIssue)
     {
         Guid issueId = Guid.NewGuid();
 
@@ -124,9 +127,9 @@ public class ItemDataAccess : IItemDataAccess
             IssueDetails = newItemIssue.IssueDetails
         };
 
-        using (IDbConnection connection = new SqlConnection(dbConnection))
+        using (IDbConnection connection = new SqlConnection(_connectionString))
         {
-            _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm, dbConnection);
+            _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
         }
     }
 }

@@ -8,14 +8,18 @@ public class AccountService : IAccountService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDataAccess _dataAccess;
+    private readonly IConfigurationSettings _configurationSettings;
+    private readonly string _connectionString;
 
-    public AccountService(IHttpContextAccessor httpContextAccessor, IDataAccess dataAccess)
+    public AccountService(IHttpContextAccessor httpContextAccessor, IDataAccess dataAccess, IConfigurationSettings configurationSettings)
     {
         _httpContextAccessor = httpContextAccessor;
         _dataAccess = dataAccess;
+        _configurationSettings = configurationSettings;
+        _connectionString = configurationSettings.GetConnectionString();
     }
 
-    public string GetUserAccountId(string dbConnection)
+    public string GetUserAccountId()
     {
         string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -28,7 +32,7 @@ public class AccountService : IAccountService
             Id = userId
         };
 
-        var accountId = _dataAccess.LoadRecord<string, dynamic>(getUserAccountIdSql, getUserAccountParm, dbConnection);
+        var accountId = _dataAccess.LoadRecord<string, dynamic>(getUserAccountIdSql, getUserAccountParm);
 
         return accountId.FirstOrDefault(); // Return the AccountId
     }

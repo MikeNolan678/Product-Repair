@@ -1,6 +1,6 @@
 ﻿namespace ProductRepairDataAccess.Models;
 
-public class SQLConnectionConfig
+public class SqlConnectionConfig
 {
     public string DbConnection { get; set; }
 }

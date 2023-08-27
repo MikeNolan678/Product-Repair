@@ -11,15 +11,18 @@ public class CaseDataAccess : ICaseDataAccess
 {
     private readonly IDataAccess _dataAccess;
     private readonly IItemDataAccess _itemDataAccess;
+    private readonly IConfigurationSettings _configurationSettings;
+    private readonly string _connectionString;
 
-    public CaseDataAccess(IDataAccess dataAccess, IItemDataAccess itemDataAccess)
+    public CaseDataAccess(IDataAccess dataAccess, IItemDataAccess itemDataAccess, IConfigurationSettings configurationSettings)
     {
         _dataAccess = dataAccess;
         _itemDataAccess = itemDataAccess;
+        _configurationSettings = configurationSettings;
+        _connectionString = configurationSettings.GetConnectionString();
     }
 
-
-    public int CreateCase(string accountId, IncidentType incidentType, SalesChannel salesChannel, CaseStatus caseStatus, string dbConnection)
+    public int CreateCase(string accountId, IncidentType incidentType, SalesChannel salesChannel, CaseStatus caseStatus)
     {
         string createCaseSql = @"INSERT INTO [dbo].[Case] (AccountId, IncidentType, SalesChannel, Status)
                              VALUES
@@ -34,7 +37,7 @@ public class CaseDataAccess : ICaseDataAccess
             CaseStatus = caseStatus
         };
 
-        using (IDbConnection connection = new SqlConnection(dbConnection))
+        using (IDbConnection connection = new SqlConnection(_connectionString))
         {
             int generatedCaseId = connection.QuerySingleOrDefault<int>(createCaseSql, createCaseParm);
 
@@ -42,9 +45,9 @@ public class CaseDataAccess : ICaseDataAccess
         }
     }
 
-    public void UpdateCaseStatus(int caseId, string status, string dbConnection)
+    public void UpdateCaseStatus(int caseId, string status)
     {
-        Case caseModel = GetCaseModel(caseId, dbConnection);
+        Case caseModel = GetCaseModel(caseId);
 
         string updateCaseStatusSql = @"UPDATE [dbo].[Case]
                                         SET Status = @Status 
@@ -56,13 +59,13 @@ public class CaseDataAccess : ICaseDataAccess
             Status = status
         };
 
-        using (IDbConnection connection = new SqlConnection(dbConnection))
+        using (IDbConnection connection = new SqlConnection(_connectionString))
         {
-            _dataAccess.SaveData<dynamic>(updateCaseStatusSql, updateCaseStatusParm, dbConnection);
+            _dataAccess.SaveData<dynamic>(updateCaseStatusSql, updateCaseStatusParm);
         }
     }
 
-    public Case GetCaseModel(int caseId, string dbConnection)
+    public Case GetCaseModel(int caseId)
     {
         Case caseModel = new Case();
 
@@ -73,16 +76,16 @@ public class CaseDataAccess : ICaseDataAccess
 
         var caseModelParameters = new { CaseId = caseId };
 
-        using (IDbConnection connection = new SqlConnection(dbConnection))
+        using (IDbConnection connection = new SqlConnection(_connectionString))
         {
             caseModel = connection.QuerySingleOrDefault<Case>(caseModelSql, caseModelParameters);
         }
-        return BuildCaseModel(dbConnection, caseModel);
+        return BuildCaseModel(caseModel);
     }
 
-    public Case BuildCaseModel(string dbConnection, Case caseModel)
+    public Case BuildCaseModel(Case caseModel)
     {
-        var caseItems = _itemDataAccess.GetItemsFromCase(caseModel.CaseId, dbConnection);
+        var caseItems = _itemDataAccess.GetItemsFromCase(caseModel.CaseId);
 
         if (caseItems != null && caseItems.Count > 0)
         {
@@ -90,7 +93,7 @@ public class CaseDataAccess : ICaseDataAccess
 
             foreach (var item in caseModel.Items)
             {
-                var itemIssues = _itemDataAccess.GetItemIssueFromItem(item.ItemId, dbConnection);
+                var itemIssues = _itemDataAccess.GetItemIssueFromItem(item.ItemId);
 
                 if (itemIssues != null && itemIssues.Count > 0)
                 {
@@ -101,7 +104,7 @@ public class CaseDataAccess : ICaseDataAccess
         return caseModel;
     }
 
-    public List<Case> GetCases(string caseStatus, string accountId, string dbConnection)
+    public List<Case> GetCases(string caseStatus, string accountId)
     {
         List<Case> caseModels = new List<Case>();
 
@@ -115,20 +118,20 @@ public class CaseDataAccess : ICaseDataAccess
             CaseStatus = caseStatus
         };
 
-        using (IDbConnection connection = new SqlConnection(dbConnection))
+        using (IDbConnection connection = new SqlConnection(_connectionString))
         {
-            caseModels = _dataAccess.LoadRecord<Case, dynamic>(getCasesSql, getCasesParm, dbConnection).ToList();
+            caseModels = _dataAccess.LoadRecord<Case, dynamic>(getCasesSql, getCasesParm).ToList();
         }
 
         foreach (var caseModel in caseModels)
         {
-            BuildCaseModel(dbConnection, caseModel);
+            BuildCaseModel(caseModel);
         }
 
         return caseModels;
     }
 
-    public void AddCustomerInformationToCase(Case caseModel, string dbConnection)
+    public void AddCustomerInformationToCase(Case caseModel)
     {
         string addCustomerInformationSql = @"UPDATE [dbo].[Case]
                                         SET CustomerFirstName = @CustomerFirstName, 
@@ -146,13 +149,13 @@ public class CaseDataAccess : ICaseDataAccess
             ReceiveNotification = caseModel.ReceiveNotification
         };
 
-        using (IDbConnection connection = new SqlConnection(dbConnection))
+        using (IDbConnection connection = new SqlConnection(_connectionString))
         {
-            _dataAccess.SaveData<dynamic>(addCustomerInformationSql, addCustomerInformationParm, dbConnection);
+            _dataAccess.SaveData<dynamic>(addCustomerInformationSql, addCustomerInformationParm);
         }
     }
 
-    public void RemoveCustomerInformationFromCase(int caseId, string dbConnection)
+    public void RemoveCustomerInformationFromCase(int caseId)
     {
         string removeCustomerInformationSql = @"UPDATE [dbo].[Case]
                                         SET CustomerFirstName = @CustomerFirstName, 
@@ -170,9 +173,9 @@ public class CaseDataAccess : ICaseDataAccess
             ReceiveNotification = (bool?)null
         };
 
-        using (IDbConnection connection = new SqlConnection(dbConnection))
+        using (IDbConnection connection = new SqlConnection(_connectionString))
         {
-            _dataAccess.SaveData<dynamic>(removeCustomerInformationSql, removeCustomerInformationParm, dbConnection);
+            _dataAccess.SaveData<dynamic>(removeCustomerInformationSql, removeCustomerInformationParm);
         }
     }
 }
