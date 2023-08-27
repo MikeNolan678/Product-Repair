@@ -7,26 +7,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.SQL
+namespace ProductRepairDataAccess.SQL;
+
+public class DataAccess
 {
-    public class DataAccess
+    public static IEnumerable<T> LoadRecord<T, U>(string sqlStatement, U parameters, string connectionString)
     {
-        public static IEnumerable<T> LoadRecord<T, U>(string sqlStatement, U parameters, string connectionString)
+        using (IDbConnection connection = new SqlConnection(connectionString))
         {
-            using (IDbConnection connection = new SqlConnection(connectionString))
-            {
-                IEnumerable<T> record = connection.Query<T>(sqlStatement, parameters);
+            IEnumerable<T> record = connection.Query<T>(sqlStatement, parameters);
 
-                return record;
-            }
+            return record;
         }
+    }
 
-        public static void SaveData<T>(string sqlStatement, T parameters, string connectionString)
+    public static void SaveData<T>(string sqlStatement, T parameters, string connectionString)
+    {
+        using (IDbConnection connection = new SqlConnection(connectionString))
         {
-            using (IDbConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Execute(sqlStatement, parameters);
-            }
+            connection.Execute(sqlStatement, parameters);
         }
     }
 }

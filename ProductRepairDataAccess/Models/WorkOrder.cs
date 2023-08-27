@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models
+namespace ProductRepairDataAccess.Models;
+
+public class WorkOrder
 {
-    public class WorkOrder
-    {
-        public string WorkOrderId { get; set; }
-        public List<Comment> Comments { get; set; }
-    }
+    public string WorkOrderId { get; set; }
+    public List<Comment> Comments { get; set; }
 }

@@ -6,20 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.SQL
+namespace ProductRepairDataAccess.SQL;
+
+public static class Configuration
 {
-    public static class Configuration
+    private static readonly SQLConnectionConfig _connectionString = new SQLConnectionConfig();
+
+    public static SQLConnectionConfig GetConfigurationSettings(IConfiguration configuration)
     {
-        private static readonly SQLConnectionConfig _connectionString = new SQLConnectionConfig();
+        SQLConnectionConfig sqlConnectionConfig = new SQLConnectionConfig();
 
-        public static SQLConnectionConfig GetConfigurationSettings(IConfiguration configuration)
-        {
-            SQLConnectionConfig sqlConnectionConfig = new SQLConnectionConfig();
+        configuration.GetSection("ConnectionStrings").Bind(_connectionString);
+        sqlConnectionConfig.DbConnection = _connectionString.DbConnection;
 
-            configuration.GetSection("ConnectionStrings").Bind(_connectionString);
-            sqlConnectionConfig.DbConnection = _connectionString.DbConnection;
-
-            return sqlConnectionConfig;
-        }
+        return sqlConnectionConfig;
     }
 }

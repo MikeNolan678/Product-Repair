@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models.Enums
+namespace ProductRepairDataAccess.Models.Enums;
+
+public enum ItemStatus
 {
-    public enum ItemStatus
-    {
-        New,
-        Approved,
-        Rejected,
-        InProgress,
-        Shipped,
-        Completed
-    }
+    New,
+    Approved,
+    Rejected,
+    InProgress,
+    Shipped,
+    Completed
 }

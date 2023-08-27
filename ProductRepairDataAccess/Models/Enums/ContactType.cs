@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models.Enums
+namespace ProductRepairDataAccess.Models.Enums;
+
+public enum ContactType
 {
-    public enum ContactType
-    {
-       Repair,
-       Logistics
-    }
+   Repair,
+   Logistics
 }

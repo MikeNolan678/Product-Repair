@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models
+namespace ProductRepairDataAccess.Models;
+
+public class Comment
 {
-    public class Comment
-    {
-        public string CommentId { get; set; }
-        public string CommentContent { get; set; }
-    }
+    public string CommentId { get; set; }
+    public string CommentContent { get; set; }
 }

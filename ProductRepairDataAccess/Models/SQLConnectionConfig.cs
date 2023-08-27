@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models
+namespace ProductRepairDataAccess.Models;
+
+public class SQLConnectionConfig
 {
-    public class SQLConnectionConfig
-    {
-        public string DbConnection { get; set; }
-    }
+    public string DbConnection { get; set; }
 }

@@ -5,13 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models
+namespace ProductRepairDataAccess.Models;
+
+public class ItemIssue
 {
-    public class ItemIssue
-    {
-        public IssueCategory IssueCategory { get; set; }
-        public IssueArea IssueArea { get; set; }
-        public ItemOrientation ItemOrientation { get; set; }
-        public string IssueDetails { get; set; }
-    }
+    public IssueCategory IssueCategory { get; set; }
+    public IssueArea IssueArea { get; set; }
+    public ItemOrientation ItemOrientation { get; set; }
+    public string IssueDetails { get; set; }
 }

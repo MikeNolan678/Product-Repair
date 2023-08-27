@@ -5,12 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models
+namespace ProductRepairDataAccess.Models;
+
+public class Shipment
 {
-    public class Shipment
-    {
-        public string ShipmentId { get; set; }
-        public List<WorkOrder> WorkOrders { get; set; }
-        public RepairCentres RepairCentre { get; set; }
-    }
+    public string ShipmentId { get; set; }
+    public List<WorkOrder> WorkOrders { get; set; }
+    public RepairCentres RepairCentre { get; set; }
 }

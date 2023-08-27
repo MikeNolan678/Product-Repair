@@ -24,7 +24,8 @@ namespace ProductRepairDealerUI
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddHttpContextAccessor(); // Add IHttpContextAccessor for accessing HttpContext
-            builder.Services.AddScoped<IAccountService, AccountService>(); // Register the service
+            builder.Services.AddScoped<IAccountService, AccountService>(); // Register the account service for DI
+            builder.Services.AddSingleton<>
 
             builder.Services.AddControllersWithViews();
 

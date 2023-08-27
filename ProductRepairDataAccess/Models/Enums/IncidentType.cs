@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models.Enums
+namespace ProductRepairDataAccess.Models.Enums;
+
+public enum IncidentType
 {
-    public enum IncidentType
-    {
-        RepairRequest
-    }
+    RepairRequest
 }

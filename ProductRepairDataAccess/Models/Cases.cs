@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models
+namespace ProductRepairDataAccess.Models;
+
+public class Cases
 {
-    public class Cases
-    {
-        public List<Case> CasesList { get; set; } = new List<Case>();
-    }
+    public List<Case> CasesList { get; set; } = new List<Case>();
 }

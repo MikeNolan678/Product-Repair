@@ -5,13 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models
+namespace ProductRepairDataAccess.Models;
+
+public class Contact
 {
-    public class Contact
-    {
-        public int ContactId { get; set; }
-        public ContactType Type { get; set; }
-        public string ContactName { get; set; }
-        public string ContactEmailAddress { get; set; }
-    }
+    public int ContactId { get; set; }
+    public ContactType Type { get; set; }
+    public string ContactName { get; set; }
+    public string ContactEmailAddress { get; set; }
 }

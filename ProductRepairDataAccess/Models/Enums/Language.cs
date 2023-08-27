@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models.Enums
+namespace ProductRepairDataAccess.Models.Enums;
+
+public enum Language
 {
-    public enum Language
-    {
-        EN,
-        FR,
-        DE,
-        IT
-    }
+    EN,
+    FR,
+    DE,
+    IT
 }

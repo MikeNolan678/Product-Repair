@@ -11,33 +11,32 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Services
+namespace ProductRepairDataAccess.Services;
+
+public class AccountService : IAccountService
 {
-    public class AccountService : IAccountService
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public AccountService(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor;
+    }
 
-        public AccountService(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
+    public string GetUserAccountId(string dbConnection)
+    {
+        string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        public string GetUserAccountId(string dbConnection)
-        {
-            string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            string Sql = @"SELECT AccountId
+        string Sql = @"SELECT AccountId
                             FROM AspNetUsers
                             WHERE Id = @Id;";
 
-            var Parm = new
-            {
-                Id = userId
-            };
+        var Parm = new
+        {
+            Id = userId
+        };
 
-            var accountId = DataAccess.LoadRecord<string, dynamic>(Sql, Parm, dbConnection);
+        var accountId = DataAccess.LoadRecord<string, dynamic>(Sql, Parm, dbConnection);
 
-            return accountId.FirstOrDefault(); // Return the AccountId
-        }
+        return accountId.FirstOrDefault(); // Return the AccountId
     }
 }

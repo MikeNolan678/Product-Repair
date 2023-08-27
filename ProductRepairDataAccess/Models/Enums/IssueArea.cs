@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models.Enums
+namespace ProductRepairDataAccess.Models.Enums;
+
+public enum IssueArea
 {
-    public enum IssueArea
-    {
-        Chest, 
-        Back,
-        LeftArm,
-        RightArm,
-        LeftLeg,
-        RightLeg,
-        Other
-    }
+    Chest, 
+    Back,
+    LeftArm,
+    RightArm,
+    LeftLeg,
+    RightLeg,
+    Other
 }

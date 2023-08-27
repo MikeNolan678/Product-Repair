@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductRepairDataAccess.Models.Enums
+namespace ProductRepairDataAccess.Models.Enums;
+
+public enum CaseStatus
 {
-    public enum CaseStatus
-    {
-        Draft,
-        New,
-        InProgress,
-        Closed, 
-        Canceled
-    }
+    Draft,
+    New,
+    InProgress,
+    Closed, 
+    Canceled
 }
