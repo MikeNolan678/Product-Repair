@@ -2,5 +2,5 @@
 
 public interface IAccountService
 {
-    Task<string> GetUserAccountId();
+    Task<string> GetUserAccountIdAsync();
 }

@@ -19,7 +19,7 @@ public class AccountService : IAccountService
         _connectionString = configurationSettings.GetConnectionString();
     }
 
-    public async Task<string> GetUserAccountId()
+    public async Task<string> GetUserAccountIdAsync()
     {
         string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
