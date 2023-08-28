@@ -115,7 +115,7 @@ public class CaseDataAccess : ICaseDataAccess
 
         foreach (var caseModel in caseModels)
         {
-            BuildCaseModelAsync(caseModel);
+            await BuildCaseModelAsync(caseModel);
         }
 
         return caseModels;
