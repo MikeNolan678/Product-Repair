@@ -30,7 +30,7 @@ public class CaseController : Controller
     // GET: CaseController
     public async Task<ActionResult> CreateCase()
     {
-        string accountId = await _accountService.GetUserAccountId();
+        string accountId = await _accountService.GetUserAccountIdAsync();
 
         int caseId = await _caseDataAccess.CreateCaseAsync(
                     accountId,
@@ -50,14 +50,14 @@ public class CaseController : Controller
     // GET: CaseController
     public async Task<ActionResult> ViewCase(int caseId)
     {
-        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModelAsync(caseId);
 
         return View(caseModel);
     }
 
     public async Task<ActionResult> NewItem(int caseId)
     {
-        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModelAsync(caseId);
 
         return View(caseModel);
     }
@@ -68,7 +68,7 @@ public class CaseController : Controller
         // Process the other fields submitted in the form and update the datasources
         await _itemDataAccess.AddItemToCaseAsync(newItem);
 
-        Case caseModel = await _caseDataAccess.GetCaseModel(newItem.CaseId);
+        Case caseModel = await _caseDataAccess.GetCaseModelAsync(newItem.CaseId);
 
         return View("ViewCase", caseModel);
     }
@@ -86,7 +86,7 @@ public class CaseController : Controller
         // Process the other fields submitted in the form and update the datasources
         await _itemDataAccess.AddItemIssueToItemAsync(newItemIssue);
 
-        Case caseModel = await _caseDataAccess.GetCaseModel(newItemIssue.CaseId);
+        Case caseModel = await _caseDataAccess.GetCaseModelAsync(newItemIssue.CaseId);
 
         return View("ViewCase", caseModel);
     }
@@ -103,9 +103,9 @@ public class CaseController : Controller
             newCustomerCaseModel.ReceiveNotification = false;
         }
 
-        await _caseDataAccess.AddCustomerInformationToCase(newCustomerCaseModel);
+        await _caseDataAccess.AddCustomerInformationToCaseAsync(newCustomerCaseModel);
 
-        Case caseModel = await _caseDataAccess.GetCaseModel(newCustomerCaseModel.CaseId);
+        Case caseModel = await _caseDataAccess.GetCaseModelAsync(newCustomerCaseModel.CaseId);
 
         return View("ViewCase", caseModel);
     }
@@ -113,9 +113,9 @@ public class CaseController : Controller
     public async Task<ActionResult> RemoveCustomerInformation (int caseId)
     {
 
-        await _caseDataAccess.RemoveCustomerInformationFromCase(caseId);
+        await _caseDataAccess.RemoveCustomerInformationFromCaseAsync(caseId);
 
-        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModelAsync(caseId);
 
         return View("ViewCase", caseModel);
     }
@@ -129,25 +129,25 @@ public class CaseController : Controller
 
     public async Task<ActionResult> SaveDraft(int caseId)
     {
-        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModelAsync(caseId);
 
         return View(caseModel);
     }
 
     public async Task<ActionResult> DraftCases()
     {
-        string accountId = await _accountService.GetUserAccountId();
+        string accountId = await _accountService.GetUserAccountIdAsync();
 
         Cases casesModel = new Cases();
 
-        casesModel.CasesList.AddRange(await _caseDataAccess.GetCases("draft", accountId));
+        casesModel.CasesList.AddRange(await _caseDataAccess.GetCasesAsync("draft", accountId));
 
         return View(casesModel);
     }
 
     public async Task<ActionResult> CreateShipment(int caseId)
     {
-        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModelAsync(caseId);
 
         return View(caseModel);
     }
@@ -156,7 +156,7 @@ public class CaseController : Controller
     {
         await _caseDataAccess.UpdateCaseStatusAsync(caseId, "Canceled");
 
-        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModelAsync(caseId);
 
         return View();
     }
