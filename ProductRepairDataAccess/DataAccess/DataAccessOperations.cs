@@ -5,17 +5,17 @@ using System.Data;
 
 namespace ProductRepairDataAccess.DataAccess;
 
-public class DataAccess : IDataAccess
+public class DataAccessOperations : IDataAccessOperations
 {
     private IConfigurationSettings _configurationSettings;
     private string _connectionString;
-    public DataAccess(IConfigurationSettings configurationSettings)
+    public DataAccessOperations(IConfigurationSettings configurationSettings)
     {
         _configurationSettings = configurationSettings;
         _connectionString = configurationSettings.GetConnectionString();
 
     }
-    public IEnumerable<T> LoadRecord<T, U>(string sqlStatement, U parameters)
+    public IEnumerable<T> LoadRecords<T, U>(string sqlStatement, U parameters)
     {
         using (IDbConnection connection = new SqlConnection(_connectionString))
         {
@@ -25,8 +25,17 @@ public class DataAccess : IDataAccess
         }
     }
 
-    public void SaveData<T>(string sqlStatement, T parameters
-        )
+    public T SaveAndReturnRecord<T, U>(string sqlStatement, U parameters)
+    {
+        using (IDbConnection connection = new SqlConnection(_connectionString))
+        {
+            T result = connection.QuerySingleOrDefault<T>(sqlStatement, parameters);
+
+            return result; // Return the Identity
+        }
+    }
+
+    public void SaveData<T>(string sqlStatement, T parameters)
     {
         using (IDbConnection connection = new SqlConnection(_connectionString))
         {

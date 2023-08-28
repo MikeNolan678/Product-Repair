@@ -9,14 +9,14 @@ namespace ProductRepairDataAccess.DataAccess;
 
 public class CaseDataAccess : ICaseDataAccess
 {
-    private readonly IDataAccess _dataAccess;
+    private readonly IDataAccessOperations _dataAccessOperations;
     private readonly IItemDataAccess _itemDataAccess;
     private readonly IConfigurationSettings _configurationSettings;
     private readonly string _connectionString;
 
-    public CaseDataAccess(IDataAccess dataAccess, IItemDataAccess itemDataAccess, IConfigurationSettings configurationSettings)
+    public CaseDataAccess(IDataAccessOperations dataAccess, IItemDataAccess itemDataAccess, IConfigurationSettings configurationSettings)
     {
-        _dataAccess = dataAccess;
+        _dataAccessOperations = dataAccess;
         _itemDataAccess = itemDataAccess;
         _configurationSettings = configurationSettings;
         _connectionString = configurationSettings.GetConnectionString();
@@ -37,12 +37,9 @@ public class CaseDataAccess : ICaseDataAccess
             CaseStatus = caseStatus
         };
 
-        using (IDbConnection connection = new SqlConnection(_connectionString))
-        {
-            int generatedCaseId = connection.QuerySingleOrDefault<int>(createCaseSql, createCaseParm);
+        int generatedCaseId = _dataAccessOperations.SaveAndReturnRecord<int,dynamic>(createCaseSql, createCaseParm);
 
-            return generatedCaseId; // Return the generated CaseId
-        }
+        return generatedCaseId; // Return the generated CaseId
     }
 
     public void UpdateCaseStatus(int caseId, string status)
@@ -59,7 +56,7 @@ public class CaseDataAccess : ICaseDataAccess
                 Status = status
             };
 
-       _dataAccess.SaveData<dynamic>(updateCaseStatusSql, updateCaseStatusParm);
+       _dataAccessOperations.SaveData<dynamic>(updateCaseStatusSql, updateCaseStatusParm);
     }
 
     public Case GetCaseModel(int caseId)
@@ -69,14 +66,12 @@ public class CaseDataAccess : ICaseDataAccess
         caseModel.CaseId = caseId;
 
         string caseModelSql = @"SELECT * FROM [dbo].[Case]
-                                       WHERE CaseId = @CaseId";
+                                WHERE CaseId = @CaseId";
 
         var caseModelParameters = new { CaseId = caseId };
 
-        using (IDbConnection connection = new SqlConnection(_connectionString))
-        {
-            caseModel = connection.QuerySingleOrDefault<Case>(caseModelSql, caseModelParameters);
-        }
+        caseModel = _dataAccessOperations.SaveAndReturnRecord<Case,dynamic>(caseModelSql, caseModelParameters);
+
         return BuildCaseModel(caseModel);
     }
 
@@ -115,7 +110,7 @@ public class CaseDataAccess : ICaseDataAccess
                 CaseStatus = caseStatus
             };
 
-        caseModels = _dataAccess.LoadRecord<Case, dynamic>(getCasesSql, getCasesParm).ToList();
+        caseModels = _dataAccessOperations.LoadRecords<Case, dynamic>(getCasesSql, getCasesParm).ToList();
        
 
         foreach (var caseModel in caseModels)
@@ -144,7 +139,7 @@ public class CaseDataAccess : ICaseDataAccess
                 ReceiveNotification = caseModel.ReceiveNotification
             };
 
-        _dataAccess.SaveData<dynamic>(addCustomerInformationSql, addCustomerInformationParm);
+        _dataAccessOperations.SaveData<dynamic>(addCustomerInformationSql, addCustomerInformationParm);
     }
 
     public void RemoveCustomerInformationFromCase(int caseId)
@@ -165,7 +160,7 @@ public class CaseDataAccess : ICaseDataAccess
                 ReceiveNotification = (bool?)null
             };
 
-         _dataAccess.SaveData<dynamic>(removeCustomerInformationSql, removeCustomerInformationParm);
+         _dataAccessOperations.SaveData<dynamic>(removeCustomerInformationSql, removeCustomerInformationParm);
         
     }
 }

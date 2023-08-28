@@ -7,11 +7,11 @@ namespace ProductRepairDataAccess.Services;
 public class AccountService : IAccountService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IDataAccess _dataAccess;
+    private readonly IDataAccessOperations _dataAccess;
     private readonly IConfigurationSettings _configurationSettings;
     private readonly string _connectionString;
 
-    public AccountService(IHttpContextAccessor httpContextAccessor, IDataAccess dataAccess, IConfigurationSettings configurationSettings)
+    public AccountService(IHttpContextAccessor httpContextAccessor, IDataAccessOperations dataAccess, IConfigurationSettings configurationSettings)
     {
         _httpContextAccessor = httpContextAccessor;
         _dataAccess = dataAccess;
@@ -32,7 +32,7 @@ public class AccountService : IAccountService
             Id = userId
         };
 
-        var accountId = _dataAccess.LoadRecord<string, dynamic>(getUserAccountIdSql, getUserAccountParm);
+        var accountId = _dataAccess.LoadRecords<string, dynamic>(getUserAccountIdSql, getUserAccountParm);
 
         return accountId.FirstOrDefault(); // Return the AccountId
     }

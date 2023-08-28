@@ -11,13 +11,13 @@ public class CaseController : Controller
 {
     private readonly IAccountService _accountService;
     private readonly string _dbConnection;
-    private readonly IDataAccess _dataAccess;
+    private readonly IDataAccessOperations _dataAccess;
     private readonly ICaseDataAccess _caseDataAccess;
     private readonly IItemDataAccess _itemDataAccess;
 
     public CaseController(
         IAccountService accountService,
-        IDataAccess dataAccess, 
+        IDataAccessOperations dataAccess, 
         ICaseDataAccess caseDataAccess, 
         IItemDataAccess itemDataAccess)
     {

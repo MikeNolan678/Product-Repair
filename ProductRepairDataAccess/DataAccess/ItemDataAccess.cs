@@ -10,12 +10,12 @@ namespace ProductRepairDataAccess.DataAccess;
 
 public class ItemDataAccess : IItemDataAccess
 {
-    private readonly IDataAccess _dataAccess;
+    private readonly IDataAccessOperations _dataAccessOperations;
     private readonly IConfigurationSettings _configurationSettings;
     private readonly string _connectionString;
-    public ItemDataAccess(IDataAccess dataAccess, IConfigurationSettings configurationSettings)
+    public ItemDataAccess(IDataAccessOperations dataAccess, IConfigurationSettings configurationSettings)
     {
-        _dataAccess = dataAccess;
+        _dataAccessOperations = dataAccess;
         _configurationSettings = configurationSettings;
         _connectionString = configurationSettings.GetConnectionString();
 
@@ -38,7 +38,7 @@ public class ItemDataAccess : IItemDataAccess
                 ItemId = id,
             };
         
-        _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
+        _dataAccessOperations.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
     }
 
     public List<Item> GetItemsFromCase(int caseId)
@@ -52,7 +52,7 @@ public class ItemDataAccess : IItemDataAccess
             CaseId = caseId
         };
 
-        itemList = _dataAccess.LoadRecord<Item, dynamic>
+        itemList = _dataAccessOperations.LoadRecords<Item, dynamic>
                      (itemsFromCaseSql,
                      itemsFromCaseParm).ToList();
 
@@ -82,7 +82,7 @@ public class ItemDataAccess : IItemDataAccess
             ItemId = ItemId
         };
 
-        itemIssues = _dataAccess.LoadRecord<ItemIssue, dynamic>
+        itemIssues = _dataAccessOperations.LoadRecords<ItemIssue, dynamic>
                     (itemIssueFromItemSql,
                     itemIssueFromItemParm).ToList();
 
@@ -124,6 +124,6 @@ public class ItemDataAccess : IItemDataAccess
                 IssueDetails = newItemIssue.IssueDetails
             };
 
-        _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
+        _dataAccessOperations.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
     }
 }
