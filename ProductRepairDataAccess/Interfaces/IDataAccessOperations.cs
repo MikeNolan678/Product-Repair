@@ -2,7 +2,7 @@
 
 public interface IDataAccessOperations
 {
-    public IEnumerable<T> LoadRecords<T, U>(string sqlStatement, U parameters);
-    public T SaveAndReturnRecord<T, U>(string sqlStatement, U parameters);
-    public void SaveData<T>(string sqlStatement, T parameters);
+    public Task<List<T>> LoadRecordsAsync<T, U>(string sqlStatement, U parameters);
+    public Task<T> SaveAndReturnRecordAsync<T, U>(string sqlStatement, U parameters);
+    public Task SaveDataAsync<T>(string sqlStatement, T parameters);
 }

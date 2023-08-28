@@ -28,11 +28,11 @@ public class CaseController : Controller
     }
 
     // GET: CaseController
-    public ActionResult CreateCase()
+    public async Task<ActionResult> CreateCase()
     {
-        string accountId = _accountService.GetUserAccountId();
+        string accountId = await _accountService.GetUserAccountId();
 
-        int caseId = _caseDataAccess.CreateCase(
+        int caseId = await _caseDataAccess.CreateCaseAsync(
                     accountId,
                     IncidentType.RepairRequest,
                     SalesChannel.Dealer,
@@ -48,51 +48,51 @@ public class CaseController : Controller
     }
 
     // GET: CaseController
-    public ActionResult ViewCase(int caseId)
+    public async Task<ActionResult> ViewCase(int caseId)
     {
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
 
         return View(caseModel);
     }
 
-    public ActionResult NewItem(int caseId)
+    public async Task<ActionResult> NewItem(int caseId)
     {
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
 
         return View(caseModel);
     }
 
     [HttpPost]
-    public ActionResult AddItem(NewCase newItem)
+    public async Task<ActionResult> AddItem(NewCase newItem)
     {
         // Process the other fields submitted in the form and update the datasources
-        _itemDataAccess.AddItemToCase(newItem);
+        await _itemDataAccess.AddItemToCaseAsync(newItem);
 
-        Case caseModel = _caseDataAccess.GetCaseModel(newItem.CaseId);
+        Case caseModel = await _caseDataAccess.GetCaseModel(newItem.CaseId);
 
         return View("ViewCase", caseModel);
     }
 
-    public ActionResult NewItemIssue(int caseId, Guid ItemId)
+    public async Task<ActionResult> NewItemIssue(int caseId, Guid ItemId)
     {
-        Item itemModel =_itemDataAccess.GetItemModel(ItemId);
+        Item itemModel = await _itemDataAccess.GetItemModelAsync(ItemId);
 
         return View(itemModel);
     }
 
     [HttpPost]
-    public ActionResult AddItemIssue(NewItemIssue newItemIssue)
+    public async Task<ActionResult> AddItemIssue(NewItemIssue newItemIssue)
     {
         // Process the other fields submitted in the form and update the datasources
-        _itemDataAccess.AddItemIssueToItem(newItemIssue);
+        await _itemDataAccess.AddItemIssueToItemAsync(newItemIssue);
 
-        Case caseModel = _caseDataAccess.GetCaseModel(newItemIssue.CaseId);
+        Case caseModel = await _caseDataAccess.GetCaseModel(newItemIssue.CaseId);
 
         return View("ViewCase", caseModel);
     }
 
     [HttpPost]
-    public ActionResult AddCustomerInformation (Case newCustomerCaseModel)
+    public async Task<ActionResult> AddCustomerInformation (Case newCustomerCaseModel)
     {  
         if (Request.Form["ReceiveNotification"] == "on")
         {
@@ -103,60 +103,60 @@ public class CaseController : Controller
             newCustomerCaseModel.ReceiveNotification = false;
         }
 
-        _caseDataAccess.AddCustomerInformationToCase(newCustomerCaseModel);
+        await _caseDataAccess.AddCustomerInformationToCase(newCustomerCaseModel);
 
-        Case caseModel = _caseDataAccess.GetCaseModel(newCustomerCaseModel.CaseId);
-
-        return View("ViewCase", caseModel);
-    }
-
-    public ActionResult RemoveCustomerInformation (int caseId)
-    {
-
-        _caseDataAccess.RemoveCustomerInformationFromCase(caseId);
-
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModel(newCustomerCaseModel.CaseId);
 
         return View("ViewCase", caseModel);
     }
 
-    public ActionResult SubmitCase(int caseId)
+    public async Task<ActionResult> RemoveCustomerInformation (int caseId)
     {
-        _caseDataAccess.UpdateCaseStatus(caseId,"Open");
+
+        await _caseDataAccess.RemoveCustomerInformationFromCase(caseId);
+
+        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
+
+        return View("ViewCase", caseModel);
+    }
+
+    public async Task<ActionResult> SubmitCase(int caseId)
+    {
+        await _caseDataAccess.UpdateCaseStatusAsync(caseId,"Open");
 
         return View();
     }
 
-    public ActionResult SaveDraft(int caseId)
+    public async Task<ActionResult> SaveDraft(int caseId)
     {
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
 
         return View(caseModel);
     }
 
-    public ActionResult DraftCases()
+    public async Task<ActionResult> DraftCases()
     {
-        string accountId = _accountService.GetUserAccountId();
+        string accountId = await _accountService.GetUserAccountId();
 
         Cases casesModel = new Cases();
 
-        casesModel.CasesList.AddRange(_caseDataAccess.GetCases("draft", accountId));
+        casesModel.CasesList.AddRange(await _caseDataAccess.GetCases("draft", accountId));
 
         return View(casesModel);
     }
 
-    public ActionResult CreateShipment(int caseId)
+    public async Task<ActionResult> CreateShipment(int caseId)
     {
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
 
         return View(caseModel);
     }
 
-    public ActionResult CancelCase(int caseId)
+    public async Task<ActionResult> CancelCase(int caseId)
     {
-        _caseDataAccess.UpdateCaseStatus(caseId, "Canceled");
+        await _caseDataAccess.UpdateCaseStatusAsync(caseId, "Canceled");
 
-        Case caseModel = _caseDataAccess.GetCaseModel(caseId);
+        Case caseModel = await _caseDataAccess.GetCaseModel(caseId);
 
         return View();
     }

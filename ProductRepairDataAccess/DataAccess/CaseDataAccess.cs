@@ -22,7 +22,7 @@ public class CaseDataAccess : ICaseDataAccess
         _connectionString = configurationSettings.GetConnectionString();
     }
 
-    public int CreateCase(string accountId, IncidentType incidentType, SalesChannel salesChannel, CaseStatus caseStatus)
+    public async Task<int> CreateCaseAsync(string accountId, IncidentType incidentType, SalesChannel salesChannel, CaseStatus caseStatus)
     {
         string createCaseSql = @"INSERT INTO [dbo].[Case] (AccountId, IncidentType, SalesChannel, Status)
                              VALUES
@@ -37,14 +37,14 @@ public class CaseDataAccess : ICaseDataAccess
             CaseStatus = caseStatus
         };
 
-        int generatedCaseId = _dataAccessOperations.SaveAndReturnRecord<int,dynamic>(createCaseSql, createCaseParm);
+        int generatedCaseId = await _dataAccessOperations.SaveAndReturnRecordAsync<int,dynamic>(createCaseSql, createCaseParm);
 
         return generatedCaseId; // Return the generated CaseId
     }
 
-    public void UpdateCaseStatus(int caseId, string status)
+    public async Task UpdateCaseStatusAsync(int caseId, string status)
     {
-        Case caseModel = GetCaseModel(caseId);
+        Case caseModel = await GetCaseModel(caseId);
 
         string updateCaseStatusSql = @"UPDATE [dbo].[Case]
                                         SET Status = @Status 
@@ -56,10 +56,10 @@ public class CaseDataAccess : ICaseDataAccess
                 Status = status
             };
 
-       _dataAccessOperations.SaveData<dynamic>(updateCaseStatusSql, updateCaseStatusParm);
+       await _dataAccessOperations.SaveDataAsync<dynamic>(updateCaseStatusSql, updateCaseStatusParm);
     }
 
-    public Case GetCaseModel(int caseId)
+    public async Task<Case> GetCaseModel(int caseId)
     {
         Case caseModel = new Case();
 
@@ -70,14 +70,14 @@ public class CaseDataAccess : ICaseDataAccess
 
         var caseModelParameters = new { CaseId = caseId };
 
-        caseModel = _dataAccessOperations.SaveAndReturnRecord<Case,dynamic>(caseModelSql, caseModelParameters);
+        caseModel = await BuildCaseModel(await _dataAccessOperations.SaveAndReturnRecordAsync<Case, dynamic>(caseModelSql, caseModelParameters));
 
-        return BuildCaseModel(caseModel);
+        return caseModel;
     }
 
-    public Case BuildCaseModel(Case caseModel)
+    public async Task<Case> BuildCaseModel(Case caseModel)
     {
-        var caseItems = _itemDataAccess.GetItemsFromCase(caseModel.CaseId);
+        var caseItems = await _itemDataAccess.GetItemsFromCaseAsync(caseModel.CaseId);
 
         if (caseItems != null && caseItems.Count > 0)
         {
@@ -85,7 +85,7 @@ public class CaseDataAccess : ICaseDataAccess
 
             foreach (var item in caseModel.Items)
             {
-                var itemIssues = _itemDataAccess.GetItemIssueFromItem(item.ItemId);
+                var itemIssues = await _itemDataAccess.GetItemIssueFromItemAsync(item.ItemId);
 
                 if (itemIssues != null && itemIssues.Count > 0)
                 {
@@ -96,7 +96,7 @@ public class CaseDataAccess : ICaseDataAccess
         return caseModel;
     }
 
-    public List<Case> GetCases(string caseStatus, string accountId)
+    public async Task<List<Case>> GetCases(string caseStatus, string accountId)
     {
         List<Case> caseModels = new List<Case>();
 
@@ -110,7 +110,7 @@ public class CaseDataAccess : ICaseDataAccess
                 CaseStatus = caseStatus
             };
 
-        caseModels = _dataAccessOperations.LoadRecords<Case, dynamic>(getCasesSql, getCasesParm).ToList();
+        caseModels = await _dataAccessOperations.LoadRecordsAsync<Case, dynamic>(getCasesSql, getCasesParm);
        
 
         foreach (var caseModel in caseModels)
@@ -121,7 +121,7 @@ public class CaseDataAccess : ICaseDataAccess
         return caseModels;
     }
 
-    public void AddCustomerInformationToCase(Case caseModel)
+    public async Task AddCustomerInformationToCase(Case caseModel)
     {
         string addCustomerInformationSql = @"UPDATE [dbo].[Case]
                                         SET CustomerFirstName = @CustomerFirstName, 
@@ -139,10 +139,10 @@ public class CaseDataAccess : ICaseDataAccess
                 ReceiveNotification = caseModel.ReceiveNotification
             };
 
-        _dataAccessOperations.SaveData<dynamic>(addCustomerInformationSql, addCustomerInformationParm);
+        await _dataAccessOperations.SaveDataAsync<dynamic>(addCustomerInformationSql, addCustomerInformationParm);
     }
 
-    public void RemoveCustomerInformationFromCase(int caseId)
+    public async Task RemoveCustomerInformationFromCase(int caseId)
     {
         string removeCustomerInformationSql = @"UPDATE [dbo].[Case]
                                         SET CustomerFirstName = @CustomerFirstName, 
@@ -160,7 +160,7 @@ public class CaseDataAccess : ICaseDataAccess
                 ReceiveNotification = (bool?)null
             };
 
-         _dataAccessOperations.SaveData<dynamic>(removeCustomerInformationSql, removeCustomerInformationParm);
+         await _dataAccessOperations.SaveDataAsync<dynamic>(removeCustomerInformationSql, removeCustomerInformationParm);
         
     }
 }

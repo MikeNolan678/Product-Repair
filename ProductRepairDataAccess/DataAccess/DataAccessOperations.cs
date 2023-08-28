@@ -15,31 +15,31 @@ public class DataAccessOperations : IDataAccessOperations
         _connectionString = configurationSettings.GetConnectionString();
 
     }
-    public IEnumerable<T> LoadRecords<T, U>(string sqlStatement, U parameters)
+    public async Task<List<T>> LoadRecordsAsync<T, U>(string sqlStatement, U parameters)
     {
         using (IDbConnection connection = new SqlConnection(_connectionString))
         {
-            IEnumerable<T> record = connection.Query<T>(sqlStatement, parameters);
+             IEnumerable<T> record = await Task.Run(() => connection.QueryAsync<T>(sqlStatement, parameters));
 
-            return record;
+            return record.ToList();
         }
     }
 
-    public T SaveAndReturnRecord<T, U>(string sqlStatement, U parameters)
+    public async Task<T> SaveAndReturnRecordAsync<T, U>(string sqlStatement, U parameters)
     {
         using (IDbConnection connection = new SqlConnection(_connectionString))
         {
-            T result = connection.QuerySingleOrDefault<T>(sqlStatement, parameters);
+            T result = await Task.Run(() => connection.QuerySingleOrDefaultAsync<T>(sqlStatement, parameters));
 
             return result; // Return the Identity
         }
     }
 
-    public void SaveData<T>(string sqlStatement, T parameters)
+    public async Task SaveDataAsync<T>(string sqlStatement, T parameters)
     {
         using (IDbConnection connection = new SqlConnection(_connectionString))
         {
-            connection.Execute(sqlStatement, parameters);
+           await Task.Run(() => connection.ExecuteAsync(sqlStatement, parameters));
         }
     }
 }

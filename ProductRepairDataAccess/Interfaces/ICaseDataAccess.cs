@@ -5,12 +5,12 @@ namespace ProductRepairDataAccess.Interfaces
 {
     public interface ICaseDataAccess
     {
-        void AddCustomerInformationToCase(Case caseModel);
-        Case BuildCaseModel(Case caseModel);
-        int CreateCase(string accountId, IncidentType incidentType, SalesChannel salesChannel, CaseStatus caseStatus);
-        Case GetCaseModel(int caseId);
-        List<Case> GetCases(string caseStatus, string accountId);
-        void RemoveCustomerInformationFromCase(int caseId);
-        void UpdateCaseStatus(int caseId, string status);
+        Task AddCustomerInformationToCase(Case caseModel);
+        Task<Case> BuildCaseModel(Case caseModel);
+        Task<int> CreateCaseAsync(string accountId, IncidentType incidentType, SalesChannel salesChannel, CaseStatus caseStatus);
+        Task<Case> GetCaseModel(int caseId);
+        Task<List<Case>> GetCases(string caseStatus, string accountId);
+        Task RemoveCustomerInformationFromCase(int caseId);
+        Task UpdateCaseStatusAsync(int caseId, string status);
     }
 }

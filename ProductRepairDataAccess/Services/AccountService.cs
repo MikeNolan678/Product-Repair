@@ -19,7 +19,7 @@ public class AccountService : IAccountService
         _connectionString = configurationSettings.GetConnectionString();
     }
 
-    public string GetUserAccountId()
+    public async Task<string> GetUserAccountId()
     {
         string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -32,7 +32,7 @@ public class AccountService : IAccountService
             Id = userId
         };
 
-        var accountId = _dataAccess.LoadRecords<string, dynamic>(getUserAccountIdSql, getUserAccountParm);
+        var accountId = await _dataAccess.LoadRecordsAsync<string, dynamic>(getUserAccountIdSql, getUserAccountParm);
 
         return accountId.FirstOrDefault(); // Return the AccountId
     }
