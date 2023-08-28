@@ -10,18 +10,18 @@ namespace ProductRepairDataAccess.DataAccess;
 
 public class ItemDataAccess : IItemDataAccess
 {
-    private readonly IDataAccess _dataAccess;
+    private readonly IDataAccessOperations _dataAccessOperations;
     private readonly IConfigurationSettings _configurationSettings;
     private readonly string _connectionString;
-    public ItemDataAccess(IDataAccess dataAccess, IConfigurationSettings configurationSettings)
+    public ItemDataAccess(IDataAccessOperations dataAccess, IConfigurationSettings configurationSettings)
     {
-        _dataAccess = dataAccess;
+        _dataAccessOperations = dataAccess;
         _configurationSettings = configurationSettings;
         _connectionString = configurationSettings.GetConnectionString();
 
     }
 
-    public void AddItemToCase(NewCase newCaseModel)
+    public async Task AddItemToCaseAsync(NewCase newCaseModel)
     {
         Guid id = Guid.NewGuid();
 
@@ -38,10 +38,10 @@ public class ItemDataAccess : IItemDataAccess
                 ItemId = id,
             };
         
-        _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
+        await _dataAccessOperations.SaveDataAsync<dynamic>(addItemToCaseSql, addItemToCaseParm);
     }
 
-    public List<Item> GetItemsFromCase(int caseId)
+    public async Task<List<Item>> GetItemsFromCaseAsync(int caseId)
     {
         var itemList = new List<Item>();
 
@@ -52,9 +52,9 @@ public class ItemDataAccess : IItemDataAccess
             CaseId = caseId
         };
 
-        itemList = _dataAccess.LoadRecord<Item, dynamic>
+        itemList = await _dataAccessOperations.LoadRecordsAsync<Item, dynamic>
                      (itemsFromCaseSql,
-                     itemsFromCaseParm).ToList();
+                     itemsFromCaseParm);
 
         foreach (var item in itemList)
         {
@@ -62,7 +62,7 @@ public class ItemDataAccess : IItemDataAccess
             {
                 List<ItemIssue> itemIssues = new List<ItemIssue>();
 
-                itemIssues = GetItemIssueFromItem(item.ItemId);
+                itemIssues = await GetItemIssueFromItemAsync(item.ItemId);
 
                 item.ItemIssues.AddRange(itemIssues);
             }
@@ -70,7 +70,7 @@ public class ItemDataAccess : IItemDataAccess
         return itemList;
     }
 
-    public List<ItemIssue> GetItemIssueFromItem(Guid ItemId)
+    public async Task<List<ItemIssue>> GetItemIssueFromItemAsync(Guid ItemId)
     {
         List<ItemIssue> itemIssues = new List<ItemIssue>();
 
@@ -82,15 +82,15 @@ public class ItemDataAccess : IItemDataAccess
             ItemId = ItemId
         };
 
-        itemIssues = _dataAccess.LoadRecord<ItemIssue, dynamic>
+        itemIssues = await _dataAccessOperations.LoadRecordsAsync<ItemIssue, dynamic>
                     (itemIssueFromItemSql,
-                    itemIssueFromItemParm).ToList();
+                    itemIssueFromItemParm);
 
         return itemIssues;
 
     }
 
-    public Item GetItemModel(Guid itemId)
+    public async Task<Item> GetItemModelAsync(Guid itemId)
     {
         Item itemModel = new Item();
 
@@ -99,15 +99,12 @@ public class ItemDataAccess : IItemDataAccess
 
         var itemModelParameters = new { ItemId = itemId };
 
-        using (IDbConnection connection = new SqlConnection(_connectionString))
-        {
-            itemModel = connection.QuerySingleOrDefault<Item>(itemModelSql, itemModelParameters);
-        }
+        itemModel = await _dataAccessOperations.SaveAndReturnRecordAsync<Item,dynamic>(itemModelSql, itemModelParameters);
 
         return itemModel;
     }
 
-    public void AddItemIssueToItem(NewItemIssue newItemIssue)
+    public async Task AddItemIssueToItemAsync(NewItemIssue newItemIssue)
     {
         Guid issueId = Guid.NewGuid();
 
@@ -124,6 +121,6 @@ public class ItemDataAccess : IItemDataAccess
                 IssueDetails = newItemIssue.IssueDetails
             };
 
-        _dataAccess.SaveData<dynamic>(addItemToCaseSql, addItemToCaseParm);
+        await _dataAccessOperations.SaveDataAsync<dynamic>(addItemToCaseSql, addItemToCaseParm);
     }
 }

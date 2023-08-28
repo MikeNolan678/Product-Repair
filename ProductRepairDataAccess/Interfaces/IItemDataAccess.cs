@@ -5,10 +5,10 @@ namespace ProductRepairDataAccess.Interfaces
 {
     public interface IItemDataAccess
     {
-        void AddItemIssueToItem(NewItemIssue newItemIssue);
-        void AddItemToCase(NewCase newCaseModel);
-        List<ItemIssue> GetItemIssueFromItem(Guid ItemId);
-        Item GetItemModel(Guid itemId);
-        List<Item> GetItemsFromCase(int caseId);
+        Task AddItemIssueToItemAsync(NewItemIssue newItemIssue);
+        Task AddItemToCaseAsync(NewCase newCaseModel);
+        Task<List<ItemIssue>> GetItemIssueFromItemAsync(Guid ItemId);
+        Task<Item> GetItemModelAsync(Guid itemId);
+        Task<List<Item>> GetItemsFromCaseAsync(int caseId);
     }
 }

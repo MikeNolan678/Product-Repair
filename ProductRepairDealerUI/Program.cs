@@ -26,7 +26,7 @@ namespace ProductRepairDealerUI
 
             builder.Services.AddHttpContextAccessor(); // Add IHttpContextAccessor for accessing HttpContext
             builder.Services.AddScoped<IAccountService, AccountService>(); // Register the AccountService for DI
-            builder.Services.AddScoped<IDataAccess, DataAccess>(); //Register DataAccess for DI
+            builder.Services.AddScoped<IDataAccessOperations, DataAccessOperations>(); //Register DataAccess for DI
             builder.Services.AddScoped<IItemDataAccess, ItemDataAccess>();
             builder.Services.AddScoped<ICaseDataAccess, CaseDataAccess>();
             builder.Services.AddScoped<IConfigurationSettings, ConfigurationSettings>();
